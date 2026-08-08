@@ -8,7 +8,7 @@ const Service = () => {
    const [modalCircle, setModalCircle] = useState<string | null>(null)
 
    const circles = [
-      { id: 1, title: "Global CIO Circle", desc: "Chief Information Officers", logo: "/logos/cio.png", badge: "CIO", href: "https://globalciocircle.com" },
+      { id: 1, title: "Global cxo circle", desc: "Chief Information Officers", logo: "/logos/cio.png", badge: "CIO", href: "https://globalciocircle.com" },
       { id: 2, title: "Global CTO Circle", desc: "Chief Technology Officers", logo: "/logos/cto.png", badge: "CTO" },
       { id: 3, title: "Global CISO Circle", desc: "Chief Information Security Officers", logo: "/logos/ciso.png", badge: "CISO" },
       { id: 4, title: "Global CFO Circle", desc: "Chief Financial Officers", logo: "/logos/cfo.png", badge: "CFO" },

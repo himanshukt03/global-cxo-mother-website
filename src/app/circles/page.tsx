@@ -6,7 +6,7 @@ import Link from "next/link"
 import Image from "next/image"
 
 const circles_data = [
-    { id: 1, title: "Global CIO Circle", desc: "Chief Information Officers driving digital transformation and enterprise IT strategy.", logo: "/logos/cio.png", badge: "CIO", focus: ["Digital Transformation", "IT Architecture", "Enterprise Systems"], href: "https://globalciocircle.com" },
+    { id: 1, title: "Global cxo circle", desc: "Chief Information Officers driving digital transformation and enterprise IT strategy.", logo: "/logos/cio.png", badge: "CIO", focus: ["Digital Transformation", "IT Architecture", "Enterprise Systems"], href: "https://globalciocircle.com" },
     { id: 2, title: "Global CTO Circle", desc: "Chief Technology Officers building scalable, future-proof product ecosystems.", logo: "/logos/cto.png", badge: "CTO", focus: ["Product Strategy", "Engineering Excellence", "Emerging Tech"] },
     { id: 3, title: "Global CISO Circle", desc: "Chief Information Security Officers safeguarding data and managing enterprise risk.", logo: "/logos/ciso.png", badge: "CISO", focus: ["Cybersecurity", "Risk Management", "Compliance"] },
     { id: 4, title: "Global CFO Circle", desc: "Chief Financial Officers orchestrating capital allocation and financial growth.", logo: "/logos/cfo.png", badge: "CFO", focus: ["Capital Allocation", "Financial Strategy", "M&A"] },

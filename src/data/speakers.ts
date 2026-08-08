@@ -75,7 +75,7 @@ export const globalInnovationSummitSpeakers: Speaker[] = [
   {
     name: "Lenin Gali",
     title: "Founder",
-    company: "Global CIO Circle",
+    company: "Global cxo circle",
     image: "/assets/Founders/Lenin_Gali.JPG",
   },
   {
