@@ -6,7 +6,7 @@ Global CXO Circle (https://globalcxocircle.com) is an invite-only, executive-led
 
 - [Homepage](https://globalcxocircle.com/) - Main overview, value proposition, and core pillars of the CXO ecosystem.
 - [About Us](https://globalcxocircle.com/about-us/) - Our leadership team and advisors.
-- [Circles](https://globalcxocircle.com/circles/) - Focused executive sub-networks (e.g., Global CIO Circle).
+- [Circles](https://globalcxocircle.com/circles/) - Focused executive sub-networks.
 - [Events](https://globalcxocircle.com/events/) - Upcoming summits, roundtables, and conferences.
 - [Nominate](https://globalcxocircle.com/nominate/) - Member recommendation and peer nomination form.
 - [Resources](https://globalcxocircle.com/resources/) - Case studies, whitepapers, advisory content, and downloads.

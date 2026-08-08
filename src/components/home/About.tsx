@@ -74,7 +74,7 @@ const About = () => {
                                  background: "var(--tg-color-gradient)",
                                  border: "4px solid #fff"
                               }}></div>
-                              <h4 style={{ fontSize: "18px", fontWeight: 700, color: "var(--tg-heading-color)", marginBottom: "8px" }}>Global CIO Circle</h4>
+                              <h4 style={{ fontSize: "18px", fontWeight: 700, color: "var(--tg-heading-color)", marginBottom: "8px" }}>Global CXO Circle</h4>
                               <p style={{ fontSize: "15px", color: "var(--tg-body-color)", margin: 0 }}>
                                  We started as a community for CIOs, built on trust and honest conversation.
                               </p>

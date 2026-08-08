@@ -140,7 +140,7 @@ const AboutUsPage = () => {
                                     <h1 style={{ fontSize: "clamp(36px, 4.5vw, 52px)", fontWeight: 800, color: "var(--tg-heading-color)", marginBottom: "20px", lineHeight: 1.15 }}>
                                         The People Behind{" "}
                                         <span style={{ background: "var(--tg-color-gradient)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                                            Global CIO Circle
+                                            Global CXO Circle
                                         </span>
                                     </h1>
                                     <p style={{ fontSize: "17px", color: "var(--tg-body-color)", lineHeight: 1.7, maxWidth: "640px", margin: "0 auto" }}>
@@ -160,7 +160,7 @@ const AboutUsPage = () => {
                             <SectionHeading
                                 eyebrow="Founding Circle"
                                 title="Founding Circle"
-                                subtitle="The visionary industry leaders behind Global CIO Circle"
+                                subtitle="The visionary industry leaders behind Global CXO Circle"
                             />
                         </AnimateOnScroll>
 
