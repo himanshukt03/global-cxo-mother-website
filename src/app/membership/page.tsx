@@ -7,8 +7,7 @@ import { PhoneInput } from "react-international-phone"
 import "react-international-phone/style.css"
 import Header from "@/layouts/headers/Header"
 import Footer from "@/layouts/footers/Footer"
-
-const API_BASE_URL = "https://gcio-backend-production.up.railway.app/api"
+import { createMembershipRequestApi } from "@/portal/api/membershipRequests"
 
 /* ------------------------------------------------------------------ */
 /* Motion helpers                                                      */
@@ -136,32 +135,23 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
       }
       const cleanTier = getCleanTier(profile, otherProfile)
 
-      const res = await fetch(`${API_BASE_URL}/membership-requests`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          name: name.trim(),
-          email: email.trim(),
-          linkedin: linkedin.trim(),
-          phone: phone.trim(),
-          company: "N/A",
-          role: fullRole,
-          tier: cleanTier,
-          source: "membership",
-        }),
+      await createMembershipRequestApi({
+        name: name.trim(),
+        email: email.trim(),
+        linkedin: linkedin.trim(),
+        phone: phone.trim(),
+        company: "N/A",
+        role: fullRole,
+        tier: cleanTier,
+        source: "membership",
       })
-      const contentType = res.headers.get("content-type") ?? ""
-      const parsed = contentType.includes("application/json") ? await res.json() : await res.text()
-      if (res.ok) {
-        setSubmitted(true)
-      } else if (res.status === 409) {
-        setError(typeof parsed === "object" && parsed?.detail ? String(parsed.detail) : "An application with this email already exists.")
+      setSubmitted(true)
+    } catch (err: any) {
+      if (err?.status === 409 || String(err?.message ?? "").toLowerCase().includes("already exists")) {
+        setError("An application with this email already exists.")
       } else {
-        setError(typeof parsed === "object" && parsed?.detail ? String(parsed.detail) : "Something went wrong. Please try again.")
+        setError(err?.message || "Service is temporarily unavailable. Please try again shortly.")
       }
-    } catch {
-      setError("Service is temporarily unavailable. Please try again shortly.")
     } finally {
       setSubmitting(false)
     }

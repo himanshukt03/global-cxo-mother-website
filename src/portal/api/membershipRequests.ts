@@ -33,6 +33,3 @@ export function createMembershipRequestApi(body: {
   return apiFetch<MembershipRequest>('/membership-requests', { method: 'POST', body, skipAuthHeader: true });
 }
 
-export function deleteMembershipRequestApi(id: string) {
-  return apiFetch<{ message: string }>(`/admin/membership-requests/${id}`, { method: 'DELETE' });
-}

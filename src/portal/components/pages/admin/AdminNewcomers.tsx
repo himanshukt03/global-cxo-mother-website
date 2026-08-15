@@ -13,7 +13,6 @@ import {
   listMembershipRequestsApi,
   createMembershipRequestApi,
   updateMembershipRequestApi,
-  deleteMembershipRequestApi,
   type MembershipRequest,
 } from '@/portal/api/membershipRequests';
 import { Card, CardContent } from '@/portal/components/ui/card';
@@ -247,7 +246,6 @@ export default function AdminNewcomers() {
             company: company || 'N/A',
             role: role || 'N/A',
             tier: 'cxo',
-            created_at: createdAt || undefined,
           });
           created++;
         } catch (err: any) {
@@ -278,19 +276,6 @@ export default function AdminNewcomers() {
     }
   };
 
-  const handleDeleteMembership = async (id: string) => {
-    if (!confirm('Permanently delete this request? No email will be sent.')) return;
-    setMembershipActionLoading(id);
-    try {
-      await deleteMembershipRequestApi(id);
-      toast.success('Request deleted silently');
-      await fetchMembershipRequests();
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to delete request');
-    } finally {
-      setMembershipActionLoading(null);
-    }
-  };
 
   const handleAction = async (id: string, action: 'approve' | 'reject' | 'waitlist') => {
     setActionLoading(id);
@@ -593,10 +578,6 @@ export default function AdminNewcomers() {
                               <Button size="sm" variant="ghost" className="text-slate-500"
                                 disabled={isActioning} onClick={() => handleMembershipAction(req.id, 'waitlisted')}>
                                 <Clock className="h-3.5 w-3.5 mr-1" /> Waitlist
-                              </Button>
-                              <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 px-2"
-                                disabled={isActioning} title="Delete silently (no email sent)" onClick={() => handleDeleteMembership(req.id)}>
-                                <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </div>
                           )}
