@@ -124,7 +124,18 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
     if (!validate()) return
     setSubmitting(true)
     try {
-      const finalTier = profile === "Other" ? `Other: ${otherProfile.trim()}` : profile
+      const fullRole = profile === "Other" ? (otherProfile.trim() || "Other") : profile
+      const getCleanTier = (prof: string, other: string): string => {
+        if (prof === "Enterprise CxO") return "Enterprise CxO"
+        if (prof === "Enterprise Technology Leader (CxO-1)") return "Enterprise Tech Leader (CxO-1)"
+        if (prof === "Startup Founder / CEO") return "Startup Founder / CEO"
+        if (prof === "Venture Capital / Investor") return "Venture Capital / Investor"
+        if (prof === "Strategic Partner / Ecosystem Leader") return "Strategic Partner"
+        if (prof === "Other") return other.trim().slice(0, 32) || "Other"
+        return prof.slice(0, 32)
+      }
+      const cleanTier = getCleanTier(profile, otherProfile)
+
       const res = await fetch(`${API_BASE_URL}/membership-requests`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -134,9 +145,9 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
           email: email.trim(),
           linkedin: linkedin.trim(),
           phone: phone.trim(),
-          company: "",
-          role: profile === "Other" ? otherProfile.trim() : profile,
-          tier: finalTier,
+          company: "N/A",
+          role: fullRole,
+          tier: cleanTier,
           source: "membership",
         }),
       })
@@ -156,7 +167,7 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
             email: email.trim(),
             phone: phone.trim(),
             linkedin: linkedin.trim(),
-            profile: finalTier,
+            profile: fullRole,
             message: `New membership application received for ${name.trim()} (${email.trim()}). We have received your application and will get back to you soon.`,
           }),
         }).catch(() => {})
