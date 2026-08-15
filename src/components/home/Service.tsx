@@ -13,7 +13,7 @@ const Service = () => {
       { id: 3, title: "Global CISO Circle", desc: "Chief Information Security Officers", logo: "/logos/ciso.png", badge: "CISO" },
       { id: 4, title: "Global CFO Circle", desc: "Chief Financial Officers", logo: "/logos/cfo.png", badge: "CFO" },
       { id: 5, title: "Global CRO Circle", desc: "Chief Revenue Officers", logo: "/logos/cro-v3.png", badge: "CRO" },
-      { id: 6, title: "Global CEO Circle", desc: "Chief Executive Officers", logo: "/logos/ceo.png", badge: "CEO" },
+      { id: 6, title: "Global CAIO Circle", desc: "Chief AI Officers", logo: "/logos/caio.png", badge: "CAIO" },
       { id: 7, title: "Global Startup Circle", desc: "Founders & Entrepreneurs", logo: "/logos/startup.png", badge: "F" },
    ]
 
@@ -121,14 +121,14 @@ const Service = () => {
                         {modalCircle} is Coming Soon
                      </h3>
                      <p style={{ fontSize: "15px", color: "var(--tg-body-color)", lineHeight: 1.7, marginBottom: "24px" }}>
-                        Our team is building something exceptional. {modalCircle} will launch with the same world-class experience our CIO Circle members already enjoy. Join the waitlist to be the first to know.
+                        Our team is building something exceptional. {modalCircle} will launch with the same world-class experience our CXO Circle members already enjoy. Join the waitlist to be the first to know.
                      </p>
                      <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-                        <Link href="/waitlist" style={{
+                        <Link href="/membership" style={{
                            background: "var(--tg-color-gradient)", color: "#fff", padding: "12px 24px", borderRadius: "10px",
                            fontWeight: 600, fontSize: "14px", textDecoration: "none"
                         }}>
-                           Apply for Membership
+                           Request Membership
                         </Link>
                         <button onClick={() => setModalCircle(null)} style={{
                            background: "#f1f5f9", color: "var(--tg-heading-color)", padding: "12px 24px", borderRadius: "10px",

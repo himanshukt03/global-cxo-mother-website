@@ -11,7 +11,7 @@ const circles_data = [
     { id: 3, title: "Global CISO Circle", desc: "Chief Information Security Officers safeguarding data and managing enterprise risk.", logo: "/logos/ciso.png", badge: "CISO", focus: ["Cybersecurity", "Risk Management", "Compliance"] },
     { id: 4, title: "Global CFO Circle", desc: "Chief Financial Officers orchestrating capital allocation and financial growth.", logo: "/logos/cfo.png", badge: "CFO", focus: ["Capital Allocation", "Financial Strategy", "M&A"] },
     { id: 5, title: "Global CRO Circle", desc: "Chief Revenue Officers scaling revenue engines and market expansion.", logo: "/logos/cro-v3.png", badge: "CRO", focus: ["Revenue Operations", "Go-to-Market Strategy", "Sales Scaling"] },
-    { id: 6, title: "Global CEO Circle", desc: "Chief Executive Officers defining vision, culture, and ultimate enterprise value.", logo: "/logos/ceo.png", badge: "CEO", focus: ["Corporate Strategy", "Organizational Culture", "Board Relations"] },
+    { id: 6, title: "Global CAIO Circle", desc: "Chief AI Officers driving AI strategy, enterprise automation, and ethical AI governance.", logo: "/logos/caio.png", badge: "CAIO", focus: ["AI Strategy & Governance", "Generative AI & LLMs", "Enterprise AI Adoption"] },
     { id: 7, title: "Global Startup Circle", desc: "Founders and Entrepreneurs building the next generation of category leaders.", logo: "/logos/startup.png", badge: "F", focus: ["Venture Building", "Fundraising", "Early-Stage Scaling"] },
 ];
 
@@ -118,7 +118,7 @@ const CirclesPage = () => {
                     </div>
 
                     <div className="text-center" style={{ marginTop: "60px" }}>
-                        <Link href="/waitlist" style={{
+                        <Link href="/membership" style={{
                             display: "inline-block",
                             background: "var(--tg-color-gradient)",
                             color: "#fff",
@@ -130,7 +130,7 @@ const CirclesPage = () => {
                             boxShadow: "0 10px 30px rgba(0,71,255,0.2)",
                             transition: "all 0.3s ease"
                         }}>
-                            Apply for Membership
+                            Request Membership
                         </Link>
                     </div>
                 </div>
@@ -149,14 +149,14 @@ const CirclesPage = () => {
                                 {modalCircle} is Coming Soon
                             </h3>
                             <p style={{ fontSize: "15px", color: "var(--tg-body-color)", lineHeight: 1.7, marginBottom: "24px" }}>
-                                Our team is building something exceptional. {modalCircle} will launch with the same world-class experience our CIO Circle members already enjoy. Join the waitlist to be the first to know.
+                                Our team is building something exceptional. {modalCircle} will launch with the same world-class experience our CXO Circle members already enjoy. Join the waitlist to be the first to know.
                             </p>
                             <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
-                                <Link href="/waitlist" style={{
+                                <Link href="/membership" style={{
                                     background: "var(--tg-color-gradient)", color: "#fff", padding: "12px 24px", borderRadius: "10px",
                                     fontWeight: 600, fontSize: "14px", textDecoration: "none"
                                 }}>
-                                    Apply for Membership
+                                    Request Membership
                                 </Link>
                                 <button onClick={() => setModalCircle(null)} style={{
                                     background: "#f1f5f9", color: "var(--tg-heading-color)", padding: "12px 24px", borderRadius: "10px",
