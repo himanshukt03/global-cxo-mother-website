@@ -316,7 +316,7 @@ export const eventsData: EventDetail[] = [
     date: 'January 9-11, 2026',
     location: 'Dubai, United Arab Emirates',
     description:
-      'At the Global Innovation Summit & Retreat in Dubai-created with ISF, AEIC (American University in Dubai), and Global CIO Circle - we bring together the next generation of dreamers and the leaders who still are. It is where Junicorns aspire to change the world, founders transpire visions into reality, and unicorn founders and CxOs inspire the future of innovation.',
+      'At the Global Innovation Summit & Retreat in Dubai-created with ISF, AEIC (American University in Dubai), and Global cxo circle - we bring together the next generation of dreamers and the leaders who still are. It is where Junicorns aspire to change the world, founders transpire visions into reality, and unicorn founders and CxOs inspire the future of innovation.',
     attendees: '150+',
     heroImage: dubaiSummitImages.card,
     heroImageMobile: dubaiSummitImages.heroMobile || dubaiSummitImages.card,
@@ -350,9 +350,9 @@ export const eventsData: EventDetail[] = [
       isExternal: true,
     },
     metadata: {
-      title: 'Global CIO Circle | Dubai Summit 2026',
+      title: 'Global cxo circle | Dubai Summit 2026',
       description:
-        'Experience the Global Innovation Summit & Retreat in Dubai-where ISF, AEIC, and Global CIO Circle unite Junicorns, founders, unicorns, VCs, and CxOs.',
+        'Experience the Global Innovation Summit & Retreat in Dubai-where ISF, AEIC, and Global cxo circle unite Junicorns, founders, unicorns, VCs, and CxOs.',
       image: dubaiSummitImages.banner,
     },
     venue: {
@@ -373,7 +373,7 @@ export const eventsData: EventDetail[] = [
     date: 'December 8, 2025',
     location: 'Palo Alto Art Center, Palo Alto, CA',
     description:
-      'Atomicwork, Global CIO Circle, Okta Ventures, Tray.ai, and a coalition of startups and enterprises congregate as 150+ CxOs, VCs, and founders to examine the mission, purpose, and practical realities of building global AI-powered companies. Expect curated conversations, focused workshops, and an evening celebration that keeps the dialogue going well past the main event.',
+      'Atomicwork, Global cxo circle, Okta Ventures, Tray.ai, and a coalition of startups and enterprises congregate as 150+ CxOs, VCs, and founders to examine the mission, purpose, and practical realities of building global AI-powered companies. Expect curated conversations, focused workshops, and an evening celebration that keeps the dialogue going well past the main event.',
     attendees: '100+',
     heroImage: sfConferenceImages.card,
     heroImageMobile: sfConferenceImages.heroMobile || sfConferenceImages.card,
@@ -381,7 +381,7 @@ export const eventsData: EventDetail[] = [
     bannerImage: sfConferenceImages.banner,
     gallery: sfConferenceImages.gallery,
     overview:
-      'Hosted by Atomicwork in collaboration with Global CIO Circle, Okta Ventures, Tray.ai, selected startups, and enterprise innovation leaders to look beyond surface-level conversations. Together we will explore the deeper purpose, mission, and vision of entrepreneurship, the problems and solutions being addressed, and what it takes to build a global enterprise. Senior CxOs who lead large teams and navigate complex AI challenges will share wisdom, insights, and lessons learned for the benefits of founders and executives who wish to accelerate growth and achieve 10x outcomes. Join us for a full afternoon of panel discussions, hands-on workshops, and an evening celebration that showcases the best of the Bay Area ecosystem.',
+      'Hosted by Atomicwork in collaboration with Global cxo circle, Okta Ventures, Tray.ai, selected startups, and enterprise innovation leaders to look beyond surface-level conversations. Together we will explore the deeper purpose, mission, and vision of entrepreneurship, the problems and solutions being addressed, and what it takes to build a global enterprise. Senior CxOs who lead large teams and navigate complex AI challenges will share wisdom, insights, and lessons learned for the benefits of founders and executives who wish to accelerate growth and achieve 10x outcomes. Join us for a full afternoon of panel discussions, hands-on workshops, and an evening celebration that showcases the best of the Bay Area ecosystem.',
     objectives: [
       'Dig into the purpose, mission, and vision behind building AI-first companies with guidance from seasoned global CxOs.',
       'Gather 150+ CxOs, VCs, and founders from the Bay Area, India, and the rest of the world for meaningful peer exchange.',
@@ -392,7 +392,7 @@ export const eventsData: EventDetail[] = [
     sponsors: sfConferenceSponsors,
     itinerary: sfConferenceItinerary,
     highlights: [
-      'Atomicwork + Global CIO Circle partnership with Okta Ventures, Tray.ai, and leading enterprises.',
+      'Atomicwork + Global cxo circle partnership with Okta Ventures, Tray.ai, and leading enterprises.',
       '150+ CxOs, VCs, and founders from the Bay Area, India, and across the globe.',
       'Panels on enterprise AI, CTO playbooks, founders in the AI era, and an immersive Securing AI Agents workshop.',
       'Networking lounges, startup exhibits, and the Atomicwork holiday party to keep conversations flowing.',
@@ -406,9 +406,9 @@ export const eventsData: EventDetail[] = [
       isExternal: true,
     },
     metadata: {
-      title: 'Global CIO Circle | Silicon Valley AI Thought Leadership Summit',
+      title: 'Global cxo circle | Silicon Valley AI Thought Leadership Summit',
       description:
-        'Join Atomicwork, Global CIO Circle, Okta Ventures, and Tray.ai at the Palo Alto Art Center for a 150+ person summit on the deeper purpose of AI entrepreneurship.',
+        'Join Atomicwork, Global cxo circle, Okta Ventures, and Tray.ai at the Palo Alto Art Center for a 150+ person summit on the deeper purpose of AI entrepreneurship.',
       image: sfConferenceImages.banner,
     },
     venue: {

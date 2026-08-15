@@ -26,7 +26,7 @@ const columns: FooterColumn[] = [
    {
       title: "Get Involved",
       links: [
-         { label: "Request Access", href: "/waitlist" },
+         { label: "Request Membership", href: "/membership" },
          { label: "Nominate a Leader", href: "/nominate" },
          { label: "Member Login", href: "/login" },
       ],

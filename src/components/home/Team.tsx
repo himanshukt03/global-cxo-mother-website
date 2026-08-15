@@ -92,7 +92,7 @@ const Team = () => {
                                     ))}
                                 </ul>
                                 <div style={{ marginTop: "24px" }}>
-                                    <Link href="/waitlist" style={{
+                                    <Link href="/membership" style={{
                                         display: "block",
                                         textAlign: "center",
                                         background: "#fff",
@@ -104,7 +104,7 @@ const Team = () => {
                                         textDecoration: "none",
                                         transition: "all 0.3s ease"
                                     }} className="benefit-btn">
-                                        Request Access
+                                        Request Membership
                                     </Link>
                                 </div>
                             </div>

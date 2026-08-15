@@ -28,7 +28,8 @@ export function updateMembershipRequestApi(id: string, body: { status: string })
 export function createMembershipRequestApi(body: {
   name: string; email: string; phone?: string; linkedin?: string;
   company: string; role: string; about_me?: string; tier: string;
-  source?: string;
+  source?: string; created_at?: string;
 }) {
   return apiFetch<MembershipRequest>('/membership-requests', { method: 'POST', body, skipAuthHeader: true });
 }
+

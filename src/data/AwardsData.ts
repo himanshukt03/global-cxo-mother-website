@@ -254,7 +254,7 @@ const awardsData: AwardCategory[] = [
                 achievements: [
                     "Led Molina Healthcare's multi-year cloud transformation, delivering double-digit infrastructure savings",
                     "Instituted enterprise architecture governance later reused at Kaiser Permanente and City of Hope",
-                    "Mentors peer CTOs through CXO/50 and global CIO circles",
+                    "Mentors peer CTOs through CXO/50 and global CXO circles",
                     "Pioneered patient-centric digital platforms recognized across the Fortune 500 health ecosystem",
                 ],
                 highlights: [

@@ -72,7 +72,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
         time: "6:35 PM - 6:45 PM",
         title: "Host Welcome Address",
         description: "Founder & CEO welcome address",
-        speakers: ["Lenin Gali - Founder & CEO, Global CIO Circle"]
+        speakers: ["Lenin Gali - Founder & CEO, Global cxo circle"]
       },
       {
         time: "6:45 PM - 7:00 PM",
@@ -135,7 +135,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
     date: "September 3",
     time: "08:35 am - 09:00 am",
     title: "Welcome Address",
-    description: "A formal welcome to the Global CIO Circle and the Global Innovation Summit. The session will outline the purpose of the summit - bridging the gap between visionary founders and experienced CxOs. Includes an overview of the summit agenda, key logistics, strategic goals, and the collaborative opportunities ahead.",
+    description: "A formal welcome to the Global cxo circle and the Global Innovation Summit. The session will outline the purpose of the summit - bridging the gap between visionary founders and experienced CxOs. Includes an overview of the summit agenda, key logistics, strategic goals, and the collaborative opportunities ahead.",
     type: "keynote",
     timeOfDay: "morning",
     speakers: ["Lenin Gali"]
@@ -288,7 +288,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
     description: "Recognition dinner for amazing leaders dedicated to the profession. Inducting leaders into the CIO Hall Of Fame and recognizing CIOs taking risks by introducing startups and supporting founders' vision.",
     type: "dinner",
     timeOfDay: "evening",
-    sponsors: ["Global CIO Circle"],
+    sponsors: ["Global cxo circle"],
     subEvents: [
       {
         time: "7:00 PM - 7:15 PM",
@@ -299,7 +299,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
         time: "7:15 PM - 7:25 PM",
         title: "Opening Remarks & Awards Introduction",
         description: "Welcome address and introduction to the evening's recognition ceremonies celebrating innovation leadership",
-        speakers: ["Lenin Gali, Founder & CEO, Global CIO Circle"]
+        speakers: ["Lenin Gali, Founder & CEO, Global cxo circle"]
       },
       {
         time: "7:25 PM - 7:45 PM",
@@ -310,7 +310,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
       {
         time: "7:45 PM - 8:05 PM",
         title: "Hall of Fame Induction Ceremony",
-        description: "Prestigious induction of exceptional CIOs and technology leaders into the Global CIO Circle Hall of Fame. Celebrating careers of outstanding achievement, innovation, and leadership that have shaped the technology landscape",
+        description: "Prestigious induction of exceptional CIOs and technology leaders into the Global cxo circle Hall of Fame. Celebrating careers of outstanding achievement, innovation, and leadership that have shaped the technology landscape",
         speakers: ["Hall of Fame Inductees", "Recognition Committee"]
       },
       {
@@ -322,7 +322,7 @@ export const globalInnovationSummitItinerary: ItineraryItem[] = [
       {
         time: "8:25 PM - 8:30 PM",
         title: "Closing Remarks & Networking",
-        description: "Final remarks celebrating the achievements of all honorees and encouraging continued collaboration within the Global CIO Circle community",
+        description: "Final remarks celebrating the achievements of all honorees and encouraging continued collaboration within the Global cxo circle community",
         speakers: ["Lenin Gali"]
       }
     ]

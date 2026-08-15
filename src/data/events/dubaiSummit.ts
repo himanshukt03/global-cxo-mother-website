@@ -165,8 +165,8 @@ export const dubaiSummitSpeakers: Speaker[] = [
   {
     name: 'Lenin Gali',
     title: 'Founder & CEO',
-    company: 'Global CIO Circle',
-    image: `${dubaiSpeakerPath}/24_Lenin Gali_Founder & CEO_Global CIO Circle.jpg`,
+    company: 'Global cxo circle',
+    image: `${dubaiSpeakerPath}/24_Lenin Gali_Founder & CEO_Global cxo circle.jpg`,
   },
   {
     name: 'Padma Alluri',
