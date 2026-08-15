@@ -31,7 +31,7 @@ import {
   SelectValue,
 } from '@/portal/components/ui/select';
 import { Input } from '@/portal/components/ui/input';
-import { CheckCircle, XCircle, Clock, UserPlus, Loader2, ExternalLink, Search, Settings2, Plus, Trash2, ArrowUp, ArrowDown, Upload } from 'lucide-react';
+import { CheckCircle, XCircle, Clock, UserPlus, Loader2, ExternalLink, Search, Settings2, Plus, Trash2, ArrowUp, ArrowDown, Upload, Mail, Phone, Briefcase } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 interface IntentRequest {
@@ -63,6 +63,92 @@ function relativeTime(iso: string): string {
   if (hrs < 24) return `${hrs}h ago`;
   const days = Math.floor(hrs / 24);
   return `${days}d ago`;
+}
+
+function formatRoleCompany(role?: string | null, company?: string | null) {
+  const r = role?.trim();
+  const c = company?.trim();
+  if (r && c) return `${r} at ${c}`;
+  if (r) return r;
+  if (c) return c;
+  return null;
+}
+
+function renderCleanInterests(interestsRaw: string | null, messageRaw?: string | null) {
+  if (!interestsRaw && !messageRaw) return null;
+
+  let parsedJson: Record<string, any> | null = null;
+  let memberTypePrefix = '';
+
+  if (interestsRaw) {
+    const match = interestsRaw.match(/^(Member type:\s*[^.]+[\.\s]*)?(\{[\s\S]*\})$/);
+    if (match) {
+      if (match[1]) memberTypePrefix = match[1].trim();
+      try { parsedJson = JSON.parse(match[2]); } catch {}
+    } else if (interestsRaw.trim().startsWith('{')) {
+      try { parsedJson = JSON.parse(interestsRaw); } catch {}
+    }
+  }
+
+  if (parsedJson) {
+    const aboutMe = parsedJson.about_me;
+    const message = messageRaw || parsedJson.message;
+    const phone = parsedJson.phone;
+    const companyUrl = parsedJson.company_url;
+    const trupeerUrl = parsedJson.trupeer_url;
+
+    return (
+      <div className="mt-2.5 pt-2 border-t border-slate-100 space-y-1.5 text-xs text-slate-600">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+          {memberTypePrefix && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded bg-blue-50 text-blue-700 font-medium text-[11px]">
+              {memberTypePrefix}
+            </span>
+          )}
+          {phone && (
+            <span className="inline-flex items-center gap-1 text-slate-500">
+              <Phone className="h-3 w-3 text-slate-400" /> {phone}
+            </span>
+          )}
+          {companyUrl && (
+            <a href={companyUrl.startsWith('http') ? companyUrl : `https://${companyUrl}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">
+              Website <ExternalLink className="h-3 w-3" />
+            </a>
+          )}
+          {trupeerUrl && (
+            <a href={trupeerUrl.startsWith('http') ? trupeerUrl : `https://${trupeerUrl}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-blue-600 hover:underline">
+              Trupeer Profile <ExternalLink className="h-3 w-3" />
+            </a>
+          )}
+        </div>
+        {aboutMe && (
+          <div className="bg-slate-50 border-l-2 border-blue-400 pl-2.5 py-1.5 mt-1.5 rounded-r">
+            <p className="text-slate-700 leading-relaxed font-normal">{aboutMe}</p>
+          </div>
+        )}
+        {message && (
+          <p className="text-slate-500 italic mt-1">
+            <span className="font-medium text-slate-600 not-italic">Goal / Note:</span> "{message}"
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-2 space-y-1">
+      {interestsRaw && !interestsRaw.startsWith('{') && (
+        <p className="text-xs text-slate-500 bg-slate-50 border border-slate-100 px-2.5 py-1 rounded inline-block">
+          {interestsRaw}
+        </p>
+      )}
+      {messageRaw && (
+        <p className="text-xs text-slate-600 italic bg-slate-50 border-l-2 border-slate-300 pl-2.5 py-1.5 mt-1 rounded-r">
+          "{messageRaw}"
+        </p>
+      )}
+    </div>
+  );
 }
 
 export default function AdminNewcomers() {
@@ -200,16 +286,15 @@ export default function AdminNewcomers() {
     return list.filter((r) =>
       r.name.toLowerCase().includes(lower) ||
       r.email.toLowerCase().includes(lower) ||
-      r.company.toLowerCase().includes(lower) ||
-      r.role.toLowerCase().includes(lower)
+      (r.company && r.company.toLowerCase().includes(lower)) ||
+      (r.role && r.role.toLowerCase().includes(lower))
     );
   };
 
-  const filteredPending = filterBySearch(pending, pendingSearch);
-  const filteredReviewed = filterBySearch(reviewed, reviewedSearch);
-
   const pendingMembership = membershipRequests.filter((r) => r.status === 'pending');
   const waitlistedMembership = membershipRequests.filter((r) => r.status === 'waitlisted');
+  const reviewedMembership = membershipRequests.filter((r) => r.status !== 'pending' && r.status !== 'waitlisted');
+
   const filterMembershipBySearch = (list: MembershipRequest[], q: string) => {
     if (!q.trim()) return list;
     const lower = q.trim().toLowerCase();
@@ -220,7 +305,25 @@ export default function AdminNewcomers() {
       r.role.toLowerCase().includes(lower)
     );
   };
-  const filteredMembership = filterMembershipBySearch(membershipRequests, membershipSearch);
+
+  const filteredPending = filterBySearch(pending, pendingSearch);
+  const filteredMembership = filterMembershipBySearch(pendingMembership, membershipSearch);
+
+  const allReviewed = [
+    ...reviewed.map((r) => ({ ...r, isMembership: false })),
+    ...reviewedMembership.map((r) => ({ ...r, isMembership: true })),
+  ].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+  const filteredReviewed = allReviewed.filter((r) => {
+    if (!reviewedSearch.trim()) return true;
+    const lower = reviewedSearch.trim().toLowerCase();
+    return (
+      r.name.toLowerCase().includes(lower) ||
+      r.email.toLowerCase().includes(lower) ||
+      (r.company && r.company.toLowerCase().includes(lower)) ||
+      (r.role && r.role.toLowerCase().includes(lower))
+    );
+  });
 
   return (
     <div className="p-4 sm:p-6">
@@ -298,26 +401,38 @@ export default function AdminNewcomers() {
               <div className="space-y-3">
                 {filteredPending.map((req) => {
                   const isActioning = actionLoading === req.id;
+                  const roleCompany = formatRoleCompany(req.role, req.company);
                   return (
-                    <Card key={req.id}>
+                    <Card key={req.id} className="hover:shadow-md transition-shadow border-slate-200">
                       <CardContent className="py-4 px-5">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-slate-900">{req.name}</p>
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <p className="font-semibold text-slate-900 text-base">{req.name}</p>
                               <span className="text-xs text-slate-400">{relativeTime(req.created_at)}</span>
                             </div>
-                            <p className="text-sm text-slate-600">{req.role} at {req.company}</p>
-                            <p className="text-xs text-slate-500 mt-0.5">{req.email}</p>
-                            {req.linkedin && (
-                              <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
-                                target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1">
-                                LinkedIn <ExternalLink className="h-3 w-3" />
-                              </a>
+                            {roleCompany && (
+                              <p className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1.5">
+                                <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                {roleCompany}
+                              </p>
                             )}
-                            {req.interests && <p className="text-xs text-slate-400 mt-1">{req.interests}</p>}
-                            {req.message && <p className="text-xs text-slate-500 mt-1 italic">"{req.message}"</p>}
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 mb-1">
+                              {req.email && (
+                                <span className="inline-flex items-center gap-1.5 text-slate-600">
+                                  <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  {req.email}
+                                </span>
+                              )}
+                              {req.linkedin && (
+                                <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
+                                  target="_blank" rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline font-medium">
+                                  LinkedIn <ExternalLink className="h-3 w-3" />
+                                </a>
+                              )}
+                            </div>
+                            {renderCleanInterests(req.interests, req.message)}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Button size="sm" variant="outline" className="text-green-600 border-green-300 hover:bg-green-50"
@@ -381,30 +496,56 @@ export default function AdminNewcomers() {
                 {filteredMembership.map((req) => {
                   const isActioning = membershipActionLoading === req.id;
                   const badge = STATUS_BADGE[req.status] ?? STATUS_BADGE.pending;
+                  const roleCompany = formatRoleCompany(req.role, req.company);
                   return (
-                    <Card key={req.id}>
+                    <Card key={req.id} className="hover:shadow-md transition-shadow border-slate-200">
                       <CardContent className="py-4 px-5">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-slate-900">{req.name}</p>
+                            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                              <p className="font-semibold text-slate-900 text-base">{req.name}</p>
                               <Badge variant="outline" className={`text-[10px] ${badge.class}`}>{badge.label}</Badge>
+                              {req.tier && (
+                                <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-semibold bg-slate-100 text-slate-700">
+                                  {req.tier}
+                                </Badge>
+                              )}
                               <span className="text-xs text-slate-400">{relativeTime(req.created_at)}</span>
                             </div>
-                            <p className="text-sm text-slate-600">{req.role} at {req.company}</p>
-                            <p className="text-xs text-slate-500 mt-0.5">{req.email}</p>
-                            {req.phone && <p className="text-xs text-slate-400 mt-0.5">{req.phone}</p>}
-                            {req.linkedin && (
-                              <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
-                                target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1">
-                                LinkedIn <ExternalLink className="h-3 w-3" />
-                              </a>
+                            {roleCompany && (
+                              <p className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1.5">
+                                <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                {roleCompany}
+                              </p>
                             )}
-                            {req.about_me && <p className="text-xs text-slate-500 mt-1 italic">"{req.about_me}"</p>}
-                            <Badge variant="outline" className="mt-1 text-[10px] capitalize">{req.tier}</Badge>
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 mb-1">
+                              {req.email && (
+                                <span className="inline-flex items-center gap-1.5 text-slate-600">
+                                  <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  {req.email}
+                                </span>
+                              )}
+                              {req.phone && (
+                                <span className="inline-flex items-center gap-1.5 text-slate-600">
+                                  <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  {req.phone}
+                                </span>
+                              )}
+                              {req.linkedin && (
+                                <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
+                                  target="_blank" rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline font-medium">
+                                  LinkedIn <ExternalLink className="h-3 w-3" />
+                                </a>
+                              )}
+                            </div>
+                            {req.about_me && (
+                              <p className="text-xs text-slate-600 italic bg-slate-50 border-l-2 border-slate-300 pl-2.5 py-1.5 mt-2 rounded-r">
+                                "{req.about_me}"
+                              </p>
+                            )}
                             {req.linked_intent_request_id && (
-                              <Badge variant="outline" className="ml-1 mt-1 text-[10px] bg-blue-50 text-blue-600">+ Program Request</Badge>
+                              <Badge variant="outline" className="mt-2 text-[10px] bg-blue-50 text-blue-600">+ Program Request</Badge>
                             )}
                           </div>
                           {req.status === 'pending' && (
@@ -457,25 +598,49 @@ export default function AdminNewcomers() {
               <div className="space-y-3">
                 {waitlistedMembership.map((req) => {
                   const isActioning = membershipActionLoading === req.id;
+                  const roleCompany = formatRoleCompany(req.role, req.company);
                   return (
-                    <Card key={req.id}>
+                    <Card key={req.id} className="hover:shadow-md transition-shadow border-slate-200">
                       <CardContent className="py-4 px-5">
                         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-1">
-                              <p className="font-semibold text-slate-900">{req.name}</p>
+                            <div className="flex flex-wrap items-center gap-2 mb-1.5">
+                              <p className="font-semibold text-slate-900 text-base">{req.name}</p>
                               <Badge variant="outline" className="text-[10px] bg-blue-50 text-blue-600">Waitlisted</Badge>
-                              <Badge variant="outline" className="text-[10px] capitalize">{req.tier}</Badge>
+                              {req.tier && (
+                                <Badge variant="secondary" className="text-[10px] uppercase tracking-wider font-semibold bg-slate-100 text-slate-700">
+                                  {req.tier}
+                                </Badge>
+                              )}
                               <span className="text-xs text-slate-400">{relativeTime(req.created_at)}</span>
                             </div>
-                            <p className="text-xs text-slate-500">{req.email}</p>
-                            {req.linkedin && (
-                              <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
-                                target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline mt-1">
-                                LinkedIn <ExternalLink className="h-3 w-3" />
-                              </a>
+                            {roleCompany && (
+                              <p className="text-sm font-medium text-slate-700 mb-1 flex items-center gap-1.5">
+                                <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                {roleCompany}
+                              </p>
                             )}
+                            <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500 mb-1">
+                              {req.email && (
+                                <span className="inline-flex items-center gap-1.5 text-slate-600">
+                                  <Mail className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  {req.email}
+                                </span>
+                              )}
+                              {req.phone && (
+                                <span className="inline-flex items-center gap-1.5 text-slate-600">
+                                  <Phone className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                                  {req.phone}
+                                </span>
+                              )}
+                              {req.linkedin && (
+                                <a href={req.linkedin.startsWith('http') ? req.linkedin : `https://${req.linkedin}`}
+                                  target="_blank" rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-xs text-blue-600 hover:underline font-medium">
+                                  LinkedIn <ExternalLink className="h-3 w-3" />
+                                </a>
+                              )}
+                            </div>
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <Button size="sm" variant="outline" className="text-green-600 border-green-300 hover:bg-green-50"
@@ -507,9 +672,9 @@ export default function AdminNewcomers() {
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
               <h2 className="text-lg font-semibold text-slate-900">
                 Reviewed
-                <Badge variant="secondary" className="ml-2">{reviewed.length}</Badge>
+                <Badge variant="secondary" className="ml-2">{allReviewed.length}</Badge>
               </h2>
-              {reviewed.length > 0 && (
+              {allReviewed.length > 0 && (
                 <div className="relative w-64">
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
                   <Input placeholder="Search reviewed..." value={reviewedSearch}
@@ -519,7 +684,7 @@ export default function AdminNewcomers() {
             </div>
             {filteredReviewed.length === 0 ? (
               <p className="text-sm text-slate-400 py-6 text-center">
-                {reviewed.length === 0 ? 'No reviewed requests yet.' : 'No matches.'}
+                {allReviewed.length === 0 ? 'No reviewed requests yet.' : 'No matches.'}
               </p>
             ) : (
               <Card>
@@ -537,11 +702,12 @@ export default function AdminNewcomers() {
                     <tbody>
                       {filteredReviewed.map((req) => {
                         const badge = STATUS_BADGE[req.status] ?? STATUS_BADGE.pending;
+                        const isActioning = req.isMembership ? membershipActionLoading === req.id : actionLoading === req.id;
                         return (
                           <tr key={req.id} className="border-b last:border-0 hover:bg-slate-50 transition-colors">
                             <td className="px-4 py-2.5 font-medium text-slate-900">{req.name}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{req.company}</td>
-                            <td className="px-4 py-2.5 text-slate-600">{req.role}</td>
+                            <td className="px-4 py-2.5 text-slate-600">{req.company || '—'}</td>
+                            <td className="px-4 py-2.5 text-slate-600">{req.role || '—'}</td>
                             <td className="px-4 py-2.5 text-slate-500 text-xs">{req.email}</td>
                             <td className="px-4 py-2.5">
                               <Badge variant="outline" className={`text-[10px] ${badge.class}`}>{badge.label}</Badge>
@@ -550,15 +716,15 @@ export default function AdminNewcomers() {
                             <td className="px-4 py-2.5 flex gap-1">
                               {req.status !== 'approved' && (
                                 <Button size="sm" variant="ghost" className="text-green-600 h-7 text-xs"
-                                  disabled={actionLoading === req.id}
-                                  onClick={() => handleAction(req.id, 'approve')}>
+                                  disabled={isActioning}
+                                  onClick={() => req.isMembership ? handleMembershipAction(req.id, 'approved') : handleAction(req.id, 'approve')}>
                                   Approve
                                 </Button>
                               )}
                               {req.status !== 'rejected' && (
                                 <Button size="sm" variant="ghost" className="text-red-600 h-7 text-xs"
-                                  disabled={actionLoading === req.id}
-                                  onClick={() => handleAction(req.id, 'reject')}>
+                                  disabled={isActioning}
+                                  onClick={() => req.isMembership ? handleMembershipAction(req.id, 'rejected') : handleAction(req.id, 'reject')}>
                                   Deny
                                 </Button>
                               )}
