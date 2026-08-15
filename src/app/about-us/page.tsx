@@ -272,13 +272,13 @@ const AboutUsPage = () => {
                                         Connect with fellow technology leaders and shape the future of enterprise innovation
                                         through collaboration and shared expertise.
                                     </p>
-                                    <Link href="/waitlist" className="community-btn" style={{
+                                    <Link href="/membership" className="community-btn" style={{
                                         display: "inline-flex", alignItems: "center", gap: "8px",
                                         background: "#fff", color: "var(--tg-theme-primary)", padding: "14px 34px",
                                         borderRadius: "8px", fontWeight: 700, fontSize: "15px", textDecoration: "none",
                                         transition: "all 0.3s ease",
                                     }}>
-                                        Request Invitation <span aria-hidden="true">→</span>
+                                        Request Membership <span aria-hidden="true">→</span>
                                     </Link>
                                 </div>
                             </div>

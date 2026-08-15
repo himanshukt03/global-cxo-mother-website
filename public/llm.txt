@@ -10,7 +10,7 @@ Global CXO Circle (https://globalcxocircle.com) is an invite-only, executive-led
 - [Events](https://globalcxocircle.com/events/) - Upcoming summits, roundtables, and conferences.
 - [Nominate](https://globalcxocircle.com/nominate/) - Member recommendation and peer nomination form.
 - [Resources](https://globalcxocircle.com/resources/) - Case studies, whitepapers, advisory content, and downloads.
-- [Waitlist](https://globalcxocircle.com/waitlist/) - Application process for joining the invite-only circle.
+- [Membership](https://globalcxocircle.com/membership/) - Application process for joining the invite-only circle.
 - [Contact](https://globalcxocircle.com/contact/) - Support, inquiries, and connection requests.
 - [Gallery](https://globalcxocircle.com/gallery/) - Event photos and visual highlights.
 

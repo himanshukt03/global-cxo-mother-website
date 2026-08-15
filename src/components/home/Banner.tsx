@@ -182,8 +182,8 @@ const Banner = () => {
                                 </p>
                                 
                                 <div className="hero-btn-group">
-                                    <Link href="/waitlist" className="tg-btn tg-btn-seven hero-btn-main" style={{ padding: "14px 30px", fontSize: "14px", color: "#fff", border: "none", display: "inline-flex", alignItems: "center", gap: "8px" }}>
-                                        Request Access
+                                    <Link href="/membership" className="tg-btn tg-btn-seven hero-btn-main" style={{ padding: "14px 30px", fontSize: "14px", color: "#fff", border: "none", display: "inline-flex", alignItems: "center", gap: "8px" }}>
+                                        Request Membership
                                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" style={{ flexShrink: 0 }}>
                                             <path d="M9 5l7 7-7 7" />
                                         </svg>
