@@ -104,7 +104,7 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
       errors.phone = "Please enter your mobile number with country code."
     } else if (!cleanedPhone.startsWith("+")) {
       errors.phone = "Please include your country code starting with '+' (e.g. +1 555-000-0000 or +91 9876543210)."
-    } else if (digitsOnly.length < 6 || digitsOnly.length > 15) {
+    } else if (digitsOnly.length < 8 || digitsOnly.length > 13) {
       errors.phone = "Please enter a valid mobile number with country code (e.g., +1 555-000-0000 or +91 9876543210)."
     }
 
