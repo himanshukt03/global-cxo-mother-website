@@ -165,6 +165,7 @@ export default function AdminNewcomers() {
   const [membershipLoading, setMembershipLoading] = useState(false);
   const [membershipActionLoading, setMembershipActionLoading] = useState<string | null>(null);
   const [membershipSearch, setMembershipSearch] = useState('');
+  const [waitlistSearch, setWaitlistSearch] = useState('');
   const [importing, setImporting] = useState(false);
 
   const fetchRequests = useCallback(async () => {
@@ -308,6 +309,7 @@ export default function AdminNewcomers() {
 
   const filteredPending = filterBySearch(pending, pendingSearch);
   const filteredMembership = filterMembershipBySearch(pendingMembership, membershipSearch);
+  const filteredWaitlist = filterMembershipBySearch(waitlistedMembership, waitlistSearch);
 
   const allReviewed = [
     ...reviewed.map((r) => ({ ...r, isMembership: false })),
@@ -591,12 +593,21 @@ export default function AdminNewcomers() {
                 Waitlist
                 <Badge className="bg-blue-100 text-blue-700 ml-2">{waitlistedMembership.length}</Badge>
               </h2>
+              {waitlistedMembership.length > 0 && (
+                <div className="relative w-64">
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                  <Input placeholder="Search waitlist..." value={waitlistSearch}
+                    onChange={(e) => setWaitlistSearch(e.target.value)} className="pl-8 h-8 text-xs" />
+                </div>
+              )}
             </div>
-            {waitlistedMembership.length === 0 ? (
-              <p className="text-sm text-slate-400 py-6 text-center">No waitlisted entries.</p>
+            {filteredWaitlist.length === 0 ? (
+              <p className="text-sm text-slate-400 py-6 text-center">
+                {waitlistedMembership.length === 0 ? 'No waitlisted entries.' : 'No matches.'}
+              </p>
             ) : (
               <div className="space-y-3">
-                {waitlistedMembership.map((req) => {
+                {filteredWaitlist.map((req) => {
                   const isActioning = membershipActionLoading === req.id;
                   const roleCompany = formatRoleCompany(req.role, req.company);
                   return (
