@@ -329,6 +329,20 @@ export default function AdminUsers(): JSX.Element {
     setPage(1);
   }, []);
 
+  const handleTabClick = useCallback((tabTier: string) => {
+    setFilters((prev) => ({
+      search: prev.search,
+      tier: tabTier,
+      program: 'all',
+      cohort: 'all',
+      company: '',
+      title: '',
+      dateFrom: '',
+      dateTo: '',
+    }));
+    setPage(1);
+  }, []);
+
   const clearFilters = useCallback(() => {
     setFilters(EMPTY_FILTERS);
     setSearchParams({});
@@ -539,20 +553,11 @@ export default function AdminUsers(): JSX.Element {
 
   return (
     <div className="p-4 sm:p-6">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">
             Users ({users.length})
           </h1>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
-            {Object.entries(tierCounts)
-              .sort(([, a], [, b]) => b - a)
-              .map(([tier, count]) => (
-                <span key={tier} className="whitespace-nowrap">
-                  {tier.charAt(0).toUpperCase() + tier.slice(1)}: {count}
-                </span>
-              ))}
-          </div>
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <input
@@ -597,6 +602,45 @@ export default function AdminUsers(): JSX.Element {
             <UserPlus className="h-4 w-4" /> Create User
           </Button>
         </div>
+      </div>
+
+      {/* Role/Tier quick tabs */}
+      <div className="inline-flex flex-wrap rounded-lg bg-slate-100 p-1 mb-4 gap-1">
+        {[
+          { id: 'all', label: 'All Users', count: users.length },
+          { id: 'cxo', label: 'Cxo', count: tierCounts['cxo'] ?? 0 },
+          { id: 'startup', label: 'Startup', count: tierCounts['startup'] ?? 0 },
+          { id: 'vc', label: 'Vc', count: tierCounts['vc'] ?? 0 },
+          { id: 'admin', label: 'Admin', count: tierCounts['admin'] ?? 0 },
+          { id: 'dev', label: 'Dev', count: tierCounts['dev'] ?? 0 },
+        ].map((tab) => {
+          const isActive = filters.tier === tab.id;
+          return (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => handleTabClick(tab.id)}
+              className={cn(
+                'rounded-md px-3.5 py-1.5 text-xs font-medium transition-all flex items-center gap-1.5',
+                isActive
+                  ? 'bg-white text-slate-900 shadow-sm font-semibold'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60',
+              )}
+            >
+              <span>{tab.label}:</span>
+              <span
+                className={cn(
+                  'rounded-full px-1.5 py-0.5 text-[10px] font-bold',
+                  isActive
+                    ? 'bg-slate-100 text-slate-900'
+                    : 'bg-slate-200/80 text-slate-600',
+                )}
+              >
+                {tab.count}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Search + Filter Toggle */}

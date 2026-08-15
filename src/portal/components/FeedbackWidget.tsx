@@ -3,8 +3,24 @@ import { MessageCircle, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { apiFetch } from '@/portal/api/client';
 
-export default function FeedbackWidget() {
-  const [open, setOpen] = useState(false);
+interface FeedbackWidgetProps {
+  showFloatingButton?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+export default function FeedbackWidget({
+  showFloatingButton = true,
+  open: externalOpen,
+  onOpenChange,
+}: FeedbackWidgetProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const setOpen = (value: boolean) => {
+    setInternalOpen(value);
+    onOpenChange?.(value);
+  };
+
   const [category, setCategory] = useState('general');
   const [message, setMessage] = useState('');
   const [submitting, setSubmitting] = useState(false);
@@ -34,19 +50,21 @@ export default function FeedbackWidget() {
   return (
     <>
       {/* Floating button */}
-      <button
-        onClick={() => setOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all hover:scale-105"
-        title="Send feedback"
-      >
-        <MessageCircle className="h-5 w-5" />
-      </button>
+      {showFloatingButton && (
+        <button
+          onClick={() => setOpen(true)}
+          className="fixed bottom-20 right-6 z-40 flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all hover:scale-105"
+          title="Send feedback"
+        >
+          <MessageCircle className="h-5 w-5" />
+        </button>
+      )}
 
       {/* Modal */}
-      {open && (
-        <div className="fixed inset-0 z-[100] flex items-end justify-end p-6">
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center sm:items-end sm:justify-end p-4 sm:p-6">
           <div
-            className="absolute inset-0 bg-black/20"
+            className="absolute inset-0 bg-black/20 backdrop-blur-sm sm:backdrop-blur-none"
             onClick={() => setOpen(false)}
           />
           <div className="relative w-full max-w-sm rounded-2xl bg-white shadow-2xl border p-6">

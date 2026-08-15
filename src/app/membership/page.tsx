@@ -155,22 +155,6 @@ function MembershipForm({ variant = "default" }: { variant?: "default" | "hero" 
       const parsed = contentType.includes("application/json") ? await res.json() : await res.text()
       if (res.ok) {
         setSubmitted(true)
-        // Also dispatch email notification with Global CXO Circle sender branding
-        fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            access_key: "b6e38651-6009-4ab0-a71d-c98ddda90dfa",
-            from_name: "Global CXO Circle",
-            subject: "New Membership Application - Global CXO Circle",
-            name: name.trim(),
-            email: email.trim(),
-            phone: phone.trim(),
-            linkedin: linkedin.trim(),
-            profile: fullRole,
-            message: `New membership application received for ${name.trim()} (${email.trim()}). We have received your application and will get back to you soon.`,
-          }),
-        }).catch(() => {})
       } else if (res.status === 409) {
         setError(typeof parsed === "object" && parsed?.detail ? String(parsed.detail) : "An application with this email already exists.")
       } else {

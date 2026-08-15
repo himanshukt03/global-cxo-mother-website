@@ -13,6 +13,7 @@ import {
   listMembershipRequestsApi,
   createMembershipRequestApi,
   updateMembershipRequestApi,
+  deleteMembershipRequestApi,
   type MembershipRequest,
 } from '@/portal/api/membershipRequests';
 import { Card, CardContent } from '@/portal/components/ui/card';
@@ -55,14 +56,22 @@ const STATUS_BADGE: Record<string, { label: string; class: string }> = {
   waitlisted: { label: 'Waitlisted', class: 'bg-slate-100 text-slate-700' },
 };
 
-function relativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
+function relativeTime(iso?: string | null): string {
+  if (!iso) return '';
+  const date = new Date(iso);
+  const diff = Date.now() - date.getTime();
+  if (isNaN(diff)) return '';
   const mins = Math.floor(diff / 60_000);
+  if (mins < 1) return 'just now';
   if (mins < 60) return `${mins}m ago`;
   const hrs = Math.floor(mins / 60);
   if (hrs < 24) return `${hrs}h ago`;
   const days = Math.floor(hrs / 24);
-  return `${days}d ago`;
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo ago`;
+  const years = Math.floor(months / 12);
+  return `${years}y ago`;
 }
 
 function formatRoleCompany(role?: string | null, company?: string | null) {
@@ -223,20 +232,27 @@ export default function AdminNewcomers() {
         const linkedin = norm(['linkedin', 'linkedinurl', 'linkedinprofile', 'linkedinprofileurl']);
         const company = norm(['company', 'organization', 'companyname']);
         const role = norm(['role', 'title', 'jobtitle', 'position']);
+        const createdAt = norm(['createdat', 'submittedat', 'created', 'submitted', 'datesubmitted', 'date', 'timestamp']);
 
-        if (!fullName || !email) { skipped++; continue; }
+        if (!fullName || !email) {
+          skipped++;
+          console.warn('[CSV Import Skipped] Missing name or email:', row);
+          continue;
+        }
         try {
           await createMembershipRequestApi({
             name: fullName,
             email,
             linkedin: linkedin || undefined,
-            company: company || '',
-            role: role || '',
+            company: company || 'N/A',
+            role: role || 'N/A',
             tier: 'cxo',
+            created_at: createdAt || undefined,
           });
           created++;
-        } catch {
-          skipped++; // duplicate or error
+        } catch (err: any) {
+          skipped++;
+          console.warn(`[CSV Import Skipped] ${fullName} (${email}):`, err.message || err);
         }
       }
       toast.success(`Imported ${created} waitlist entries (${skipped} skipped)`);
@@ -257,6 +273,20 @@ export default function AdminNewcomers() {
       await fetchMembershipRequests();
     } catch (err: any) {
       toast.error(err.message || `Failed to ${action}`);
+    } finally {
+      setMembershipActionLoading(null);
+    }
+  };
+
+  const handleDeleteMembership = async (id: string) => {
+    if (!confirm('Permanently delete this request? No email will be sent.')) return;
+    setMembershipActionLoading(id);
+    try {
+      await deleteMembershipRequestApi(id);
+      toast.success('Request deleted silently');
+      await fetchMembershipRequests();
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to delete request');
     } finally {
       setMembershipActionLoading(null);
     }
@@ -563,6 +593,10 @@ export default function AdminNewcomers() {
                               <Button size="sm" variant="ghost" className="text-slate-500"
                                 disabled={isActioning} onClick={() => handleMembershipAction(req.id, 'waitlisted')}>
                                 <Clock className="h-3.5 w-3.5 mr-1" /> Waitlist
+                              </Button>
+                              <Button size="sm" variant="ghost" className="text-red-500 hover:text-red-700 hover:bg-red-50 h-8 px-2"
+                                disabled={isActioning} title="Delete silently (no email sent)" onClick={() => handleDeleteMembership(req.id)}>
+                                <Trash2 className="h-3.5 w-3.5" />
                               </Button>
                             </div>
                           )}

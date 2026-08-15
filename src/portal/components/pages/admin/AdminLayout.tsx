@@ -13,6 +13,7 @@ import {
   LayoutDashboard,
   Mail,
   Menu,
+  MessageCircle,
   MessageSquare,
   PanelLeft,
   PanelLeftClose,
@@ -24,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import BackendConnectionAlert from "@/portal/components/BackendConnectionAlert";
+import FeedbackWidget from "@/portal/components/FeedbackWidget";
 import { useAuth } from "@/portal/hooks/useAuth";
 import { cn } from "@/portal/lib/utils";
 
@@ -75,6 +77,7 @@ export const navSections: NavSection[] = [
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const { backendCatalogWarning, useApiAuth } = useAuth();
 
   const { data: alertCounts } = useQuery({
@@ -180,62 +183,91 @@ const AdminLayout = () => {
             </button>
           )}
         </div>
-        <nav className={cn("flex flex-1 flex-col", sidebarOpen ? "p-4" : "p-2")}>
-          {navSections.map((group, gi) => (
-            <div key={group.section} className={gi > 0 ? "mt-4" : ""}>
-              {sidebarOpen && (
-                <div className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
-                  {group.section}
+        <nav className={cn("flex flex-1 flex-col justify-between", sidebarOpen ? "p-4" : "p-2")}>
+          <div>
+            {navSections.map((group, gi) => (
+              <div key={group.section} className={gi > 0 ? "mt-4" : ""}>
+                {sidebarOpen && (
+                  <div className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-wider text-gray-400">
+                    {group.section}
+                  </div>
+                )}
+                {!sidebarOpen && gi > 0 && (
+                  <div className="mx-2 mb-1 border-t border-gray-200" />
+                )}
+                <div className="flex flex-col gap-0.5">
+                  {group.items.map((item) => (
+                    <NavLink
+                      key={item.to}
+                      to={item.to}
+                      end={item.end}
+                      title={!sidebarOpen ? item.label : undefined}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={({ isActive }) =>
+                        cn(
+                          "flex items-center rounded-lg text-sm font-medium transition-colors",
+                          sidebarOpen ? "gap-3 px-3 py-2" : "justify-center px-2 py-2",
+                          isActive
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        )
+                      }
+                    >
+                      <item.icon className="h-4 w-4 shrink-0" />
+                      {sidebarOpen && item.label}
+                      {sidebarOpen && item.label === 'Alerts' && (alertCounts?.total ?? 0) > 0 && (
+                        <Badge className="ml-auto bg-red-100 text-red-700 text-[10px] px-1.5">
+                          {alertCounts!.total}
+                        </Badge>
+                      )}
+                      {sidebarOpen && item.label === 'Memberships' && (alertCounts?.total ?? 0) > 0 && (
+                        <Badge className="ml-auto bg-red-100 text-red-700 text-[10px] px-1.5">
+                          {alertCounts!.total}
+                        </Badge>
+                      )}
+                    </NavLink>
+                  ))}
                 </div>
-              )}
-              {!sidebarOpen && gi > 0 && (
-                <div className="mx-2 mb-1 border-t border-gray-200" />
-              )}
-              <div className="flex flex-col gap-0.5">
-                {group.items.map((item) => (
-                  <NavLink
-                    key={item.to}
-                    to={item.to}
-                    end={item.end}
-                    title={!sidebarOpen ? item.label : undefined}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={({ isActive }) =>
-                      cn(
-                        "flex items-center rounded-lg text-sm font-medium transition-colors",
-                        sidebarOpen ? "gap-3 px-3 py-2" : "justify-center px-2 py-2",
-                        isActive
-                          ? "bg-gray-100 text-gray-900"
-                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                      )
-                    }
-                  >
-                    <item.icon className="h-4 w-4 shrink-0" />
-                    {sidebarOpen && item.label}
-                    {sidebarOpen && item.label === 'Alerts' && (alertCounts?.total ?? 0) > 0 && (
-                      <Badge className="ml-auto bg-red-100 text-red-700 text-[10px] px-1.5">
-                        {alertCounts!.total}
-                      </Badge>
-                    )}
-                    {sidebarOpen && item.label === 'Memberships' && (alertCounts?.total ?? 0) > 0 && (
-                      <Badge className="ml-auto bg-red-100 text-red-700 text-[10px] px-1.5">
-                        {alertCounts!.total}
-                      </Badge>
-                    )}
-                  </NavLink>
-                ))}
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Submit Feedback Button — positioned at bottom of sidebar (under Settings) */}
+          <div className={cn("pt-3 mt-4 border-t border-gray-200", sidebarOpen ? "px-1" : "px-0")}>
+            <button
+              onClick={() => {
+                setFeedbackOpen(true);
+                setMobileMenuOpen(false);
+              }}
+              title={!sidebarOpen ? "Submit Feedback" : undefined}
+              className={cn(
+                "flex w-full items-center rounded-lg text-sm font-medium transition-colors text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                sidebarOpen ? "gap-3 px-3 py-2" : "justify-center px-2 py-2"
+              )}
+            >
+              <MessageCircle className="h-4 w-4 shrink-0 text-slate-500" />
+              {sidebarOpen && <span>Submit Feedback</span>}
+            </button>
+          </div>
         </nav>
       </aside>
 
       <div className="flex flex-1 flex-col min-w-0">
         {/* Mobile header bar */}
-        <div className="flex md:hidden items-center h-14 px-4 border-b bg-white shrink-0">
-          <button onClick={() => { setSidebarOpen(true); setMobileMenuOpen((v) => !v); }} className="p-2">
-            <Menu className="h-5 w-5" />
+        <div className="flex md:hidden items-center justify-between h-14 px-4 border-b bg-white shrink-0">
+          <div className="flex items-center">
+            <button onClick={() => { setSidebarOpen(true); setMobileMenuOpen((v) => !v); }} className="p-2">
+              <Menu className="h-5 w-5" />
+            </button>
+            <span className="ml-2 font-semibold text-gray-900">Admin Console</span>
+          </div>
+          <button
+            onClick={() => setFeedbackOpen(true)}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors"
+          >
+            <MessageCircle className="h-3.5 w-3.5 text-slate-500" />
+            <span>Feedback</span>
           </button>
-          <span className="ml-2 font-semibold text-gray-900">Admin Console</span>
         </div>
 
         <main className="flex-1 overflow-y-auto">
@@ -249,6 +281,12 @@ const AdminLayout = () => {
           </div>
         </main>
       </div>
+
+      <FeedbackWidget
+        showFloatingButton={false}
+        open={feedbackOpen}
+        onOpenChange={setFeedbackOpen}
+      />
     </div>
   );
 };

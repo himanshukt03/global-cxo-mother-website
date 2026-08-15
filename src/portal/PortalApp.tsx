@@ -233,7 +233,7 @@ const AppContent = () => {
         </Routes>
         {!isAdmin && !isStandalone && <Footer />}
       </div>
-      <FeedbackWidget />
+      <FeedbackWidget showFloatingButton={!isAdmin} />
       <DevToolbar />
     </div>
   );
