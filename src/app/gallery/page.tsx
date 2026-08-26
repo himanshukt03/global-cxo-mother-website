@@ -69,14 +69,6 @@ const GalleryPage = () => {
                                                     position: "absolute", inset: 0,
                                                     background: "linear-gradient(180deg, rgba(11,26,74,0) 35%, rgba(11,26,74,0.78) 100%)",
                                                 }} />
-                                                <span style={{
-                                                    position: "absolute", top: "18px", left: "18px",
-                                                    display: "inline-flex", alignItems: "center", gap: "6px",
-                                                    background: "rgba(255,255,255,0.92)", color: "var(--tg-heading-color)",
-                                                    fontSize: "11.5px", fontWeight: 700, padding: "6px 12px", borderRadius: "100px",
-                                                }}>
-                                                    <CameraIcon /> {g.photos.length} photos
-                                                </span>
                                                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "26px 26px 24px" }}>
                                                     <h3 style={{ fontSize: "24px", fontWeight: 700, color: "#fff", marginBottom: "8px", lineHeight: 1.25 }}>
                                                         {g.title}

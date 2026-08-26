@@ -5,6 +5,7 @@ import Header from "@/layouts/headers/Header"
 import Footer from "@/layouts/footers/Footer"
 import AnimateOnScroll from "@/components/ui/AnimateOnScroll"
 import type { EventGallery } from "@/data/GalleryData"
+import CIO100MediaAccess from "../events/CIO100MediaAccess"
 
 const GRID_COLUMNS = 4
 const ROWS_INITIAL = 3
@@ -133,11 +134,14 @@ const GalleryDetail = ({ gallery }: { gallery: EventGallery }) => {
                     </div>
                 </section>
 
-                {/* Grid */}
-                <section style={{ backgroundColor: "#f8f9fa", padding: "20px 0 120px" }}>
-                    <div className="container">
-                        <AnimateOnScroll>
-                            <div className="gallery-grid">
+                {/* Grid or Gated CIO100 Access */}
+                {gallery.slug === "cio-100-awards-conference" ? (
+                    <CIO100MediaAccess />
+                ) : (
+                    <section style={{ backgroundColor: "#f8f9fa", padding: "20px 0 120px" }}>
+                        <div className="container">
+                            <AnimateOnScroll>
+                                <div className="gallery-grid">
                                 {visiblePhotos.map((photo, i) => (
                                     <button
                                         key={photo.thumb}
@@ -181,6 +185,7 @@ const GalleryDetail = ({ gallery }: { gallery: EventGallery }) => {
                         )}
                     </div>
                 </section>
+                )}
             </main>
             <Footer />
 

@@ -114,7 +114,6 @@ const mlc2026Filenames = [
     "Global-CXO-67.jpg",
     "Global-CXO-68.jpg",
     "Global-CXO-69.jpg",
-    "Global-CXO-71.jpg",
     "Global-CXO-79.jpg",
     "Global-CXO-84.jpg",
     "Global-CXO-93.jpg",
@@ -124,6 +123,23 @@ const SRI_LANKA_BASE = "/assets/events/SriLanka/photos"
 const MLC_2026_BASE = "/assets/events/MLC 2026"
 
 const galleries: EventGallery[] = [
+    {
+        slug: "cio-100-awards-conference",
+        title: "CIO 100 Awards & Conference 2026",
+        location: "Frisco, Texas",
+        dateRange: "17-19 August, 2026",
+        coverImage: "/events/CIO100-2026-312.jpg",
+        photos: [
+            { thumb: "/events/cio100-gallery/CIO100 Awards & Conference-154.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-154.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100-2026-542.jpg", full: "/events/cio100-gallery/CIO100-2026-542.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100 Awards & Conference-66.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-66.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100-2026-491.jpg", full: "/events/cio100-gallery/CIO100-2026-491.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100 Awards & Conference-60.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-60.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100-2026-553.jpg", full: "/events/cio100-gallery/CIO100-2026-553.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100 Awards & Conference-2.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-2.jpg", alt: "CIO 100 Awards & Conference" },
+            { thumb: "/events/cio100-gallery/CIO100 Awards & Conference-131.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-131.jpg", alt: "CIO 100 Awards & Conference" },
+        ],
+    },
     {
         slug: "mlc-oakland-2026",
         title: "Major League Cricket — Season 04 Final",
