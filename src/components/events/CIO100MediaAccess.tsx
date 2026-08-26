@@ -1,7 +1,17 @@
 "use client"
 import React, { useState, useEffect, useCallback } from "react"
+import { API_BASE_URL } from "@/portal/api/config"
 
 const SHAREPOINT_LINK = "https://globalcxocircle.sharepoint.com/:f:/s/EventPics/IgAJqikt6aK0RbRi3Kj37uYrAfHomYc1KFuY3Lk0Yh0jTM4?e=8OUcPv"
+
+function getGalleryLeadsEndpoint(): string {
+    const raw = API_BASE_URL || "https://gcio-backend-production.up.railway.app"
+    const cleaned = raw.replace(/\/$/, "")
+    if (cleaned.endsWith("/api")) {
+        return `${cleaned}/events/gallery-leads`
+    }
+    return `${cleaned}/api/events/gallery-leads`
+}
 
 interface MediaItem {
     id: string
@@ -95,25 +105,33 @@ export default function CIO100MediaAccess() {
         setErrorMsg("")
 
         try {
-            const res = await fetch("/api/gallery-leads", {
+            const endpoint = getGalleryLeadsEndpoint()
+            const res = await fetch(endpoint, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
                 body: JSON.stringify({
                     event_slug: "cio-100-awards-conference",
                     first_name: firstName.trim(),
                     last_name: lastName.trim(),
-                    email: email.trim(),
+                    email: email.trim().toLowerCase(),
                     company: company.trim(),
                     consent,
                 }),
             })
-            const data = (await res.json()) as { success?: boolean; error?: string }
-            if (res.ok && data.success) {
+            const data = (await res.json().catch(() => ({}))) as { success?: boolean; detail?: any; error?: string }
+            if (res.ok && (data.success !== false)) {
                 setStatus("success")
                 sessionStorage.setItem("cio100_gallery_unlocked", "true")
                 setIsUnlocked(true)
             } else {
-                setErrorMsg(data.error || "Failed to record response. Please try again.")
+                const errMsg =
+                    typeof data.detail === "string"
+                        ? data.detail
+                        : data.error || "Failed to record response. Please try again."
+                setErrorMsg(errMsg)
                 setStatus("error")
             }
         } catch (err: any) {
