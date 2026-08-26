@@ -135,11 +135,11 @@ export const eventsData: EventDetail[] = [
     attendees: '400+ CIOs and CxOs',
     heroImage: '/events/cio100-banner.png',
     heroImageMobile: '/events/cio100-banner.png',
-    cardImage: '/events/cio100Step&Repeat Banner.png',
+    cardImage: '/events/cio100Step%26Repeat%20Banner.png',
     bannerImage: '/events/cio100-banner.png',
     gallery: [
       '/events/cio100-banner.png',
-      '/events/cio100Step&Repeat Banner.png',
+      '/events/cio100Step%26Repeat%20Banner.png',
       '/events/cio100flyer.png',
       '/events/cio100-hero.png',
     ],

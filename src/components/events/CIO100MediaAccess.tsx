@@ -10,14 +10,14 @@ interface MediaItem {
 }
 
 const mediaItems: MediaItem[] = [
-    { id: "1", thumb: "/events/cio100-gallery/CIO100 Awards & Conference-154.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-154.jpg" },
+    { id: "1", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-154.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-154.jpg" },
     { id: "2", thumb: "/events/cio100-gallery/CIO100-2026-542.jpg", full: "/events/cio100-gallery/CIO100-2026-542.jpg" },
-    { id: "3", thumb: "/events/cio100-gallery/CIO100 Awards & Conference-66.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-66.jpg" },
+    { id: "3", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-66.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-66.jpg" },
     { id: "4", thumb: "/events/cio100-gallery/CIO100-2026-491.jpg", full: "/events/cio100-gallery/CIO100-2026-491.jpg" },
-    { id: "5", thumb: "/events/cio100-gallery/CIO100 Awards & Conference-60.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-60.jpg" },
+    { id: "5", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-60.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-60.jpg" },
     { id: "6", thumb: "/events/cio100-gallery/CIO100-2026-553.jpg", full: "/events/cio100-gallery/CIO100-2026-553.jpg" },
-    { id: "7", thumb: "/events/cio100-gallery/CIO100 Awards & Conference-2.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-2.jpg" },
-    { id: "8", thumb: "/events/cio100-gallery/CIO100 Awards & Conference-131.jpg", full: "/events/cio100-gallery/CIO100 Awards & Conference-131.jpg" },
+    { id: "7", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-2.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-2.jpg" },
+    { id: "8", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-131.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-131.jpg" },
 ]
 
 /* ---- Icons ---- */
