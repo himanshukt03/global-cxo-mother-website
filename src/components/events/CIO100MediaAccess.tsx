@@ -107,39 +107,61 @@ export default function CIO100MediaAccess() {
         setErrorMsg("")
 
         try {
-            const endpoint = getGalleryLeadsEndpoint()
-            const res = await fetch(endpoint, {
+            const payload = {
+                event_slug: "cio-100-awards-conference",
+                first_name: firstName.trim() || "Attendee",
+                last_name: lastName.trim() || "",
+                email: email.trim().toLowerCase(),
+                company: company.trim() || "N/A",
+                consent,
+            }
+
+            const primaryEndpoint = getGalleryLeadsEndpoint()
+            let res: Response | null = await fetch(primaryEndpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json",
                 },
-                body: JSON.stringify({
-                    event_slug: "cio-100-awards-conference",
-                    first_name: firstName.trim(),
-                    last_name: lastName.trim(),
-                    email: email.trim().toLowerCase(),
-                    company: company.trim(),
-                    consent,
-                }),
-            })
-            const data = (await res.json().catch(() => ({}))) as any
-            if (res.ok && (data.success !== false)) {
+                body: JSON.stringify(payload),
+            }).catch(() => null)
+
+            // If primary failed (e.g. env var misconfigured or network block), try direct canonical backend endpoint
+            if (!res || !res.ok) {
+                const fallbackEndpoint = "https://gcio-backend-production.up.railway.app/api/events/gallery-leads"
+                if (primaryEndpoint !== fallbackEndpoint) {
+                    res = await fetch(fallbackEndpoint, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Accept": "application/json",
+                        },
+                        body: JSON.stringify(payload),
+                    }).catch(() => null)
+                }
+            }
+
+            if (res && res.ok) {
                 setStatus("success")
                 sessionStorage.setItem("cio100_gallery_unlocked", "true")
                 setIsUnlocked(true)
-            } else {
-                let errMsg = "Failed to record response. Please try again."
-                if (typeof data.detail === "string") {
-                    errMsg = data.detail
-                } else if (Array.isArray(data.detail)) {
-                    errMsg = data.detail.map((e: any) => e.msg || JSON.stringify(e)).join(", ")
-                } else if (data.error) {
-                    errMsg = String(data.error)
-                }
-                setErrorMsg(errMsg)
-                setStatus("error")
+                return
             }
+
+            const data = res ? await res.json().catch(() => ({})) : {}
+            let errMsg = "Failed to record response. Please try again."
+            if (typeof data?.detail === "string") {
+                errMsg = data.detail
+            } else if (Array.isArray(data?.detail)) {
+                errMsg = data.detail.map((e: any) => e.msg || JSON.stringify(e)).join(", ")
+            } else if (data?.error) {
+                errMsg = String(data.error)
+            } else if (res && res.status) {
+                errMsg = `Server error (${res.status}). Please try again.`
+            }
+
+            setErrorMsg(errMsg)
+            setStatus("error")
         } catch (err: any) {
             setErrorMsg("Network error — please check your connection and try again.")
             setStatus("error")
