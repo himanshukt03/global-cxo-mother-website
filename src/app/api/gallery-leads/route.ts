@@ -1,53 +1,76 @@
 import { NextResponse } from "next/server"
-import { neon } from "@neondatabase/serverless"
+
+const DEFAULT_BACKEND_URL = "https://gcio-backend-production.up.railway.app"
+
+function getBackendEndpoint(): string {
+  const raw = (
+    process.env.API_BASE_URL ||
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    DEFAULT_BACKEND_URL
+  ).trim().replace(/\/$/, "")
+
+  // Normalize: if url already contains /api at the end, use /events/gallery-leads
+  if (raw.endsWith("/api")) {
+    return `${raw}/events/gallery-leads`
+  }
+  return `${raw}/api/events/gallery-leads`
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
+    const endpoint = getBackendEndpoint()
 
-    const databaseUrl = process.env.DATABASE_URL
-    if (!databaseUrl) {
-      console.error("[gallery-leads] DATABASE_URL env var is not set")
-      return NextResponse.json(
-        { success: false, error: "Server configuration error." },
-        { status: 500 }
-      )
+    const payload = {
+      event_slug: (body.event_slug || "cio-100-awards-conference").trim(),
+      first_name: (body.first_name || "").trim(),
+      last_name: (body.last_name || "").trim(),
+      email: (body.email || "").trim().toLowerCase(),
+      company: (body.company || "").trim(),
+      consent: body.consent ?? true,
     }
 
-    const sql = neon(databaseUrl)
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 12000)
 
-    // Ensure table exists (safe no-op if already created)
-    await sql`
-      CREATE TABLE IF NOT EXISTS gallery_leads (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        event_slug VARCHAR(160) NOT NULL,
-        first_name VARCHAR(120) NOT NULL,
-        last_name VARCHAR(120) NOT NULL,
-        email VARCHAR(255) NOT NULL,
-        company VARCHAR(255) NOT NULL,
-        consent BOOLEAN NOT NULL DEFAULT TRUE,
-        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-      )
-    `
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+      },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    })
 
-    const eventSlug = (body.event_slug || "cio-100-awards-conference").trim()
-    const firstName = (body.first_name || "").trim()
-    const lastName = (body.last_name || "").trim()
-    const email = (body.email || "").trim().toLowerCase()
-    const company = (body.company || "").trim()
-    const consent = body.consent ?? true
+    clearTimeout(timeoutId)
 
-    await sql`
-      INSERT INTO gallery_leads (event_slug, first_name, last_name, email, company, consent)
-      VALUES (${eventSlug}, ${firstName}, ${lastName}, ${email}, ${company}, ${consent})
-    `
+    if (res.ok) {
+      const data = await res.json().catch(() => ({ success: true }))
+      return NextResponse.json({ success: true, ...data })
+    }
 
-    return NextResponse.json({ success: true, database: "neon" })
-  } catch (error: any) {
-    console.error("[gallery-leads] Error:", error)
+    const errorPayload = await res.json().catch(async () => {
+      const text = await res.text().catch(() => "")
+      return { detail: text || "Backend request failed" }
+    })
+
+    const errorMessage =
+      typeof errorPayload.detail === "string"
+        ? errorPayload.detail
+        : Array.isArray(errorPayload.detail)
+          ? errorPayload.detail.map((e: any) => e.msg || JSON.stringify(e)).join(", ")
+          : "Failed to record lead response."
+
     return NextResponse.json(
-      { success: false, error: error.message || "Internal server error." },
-      { status: 500 }
+      { success: false, error: errorMessage },
+      { status: res.status }
+    )
+  } catch (error: any) {
+    console.error("[gallery-leads] Proxy error:", error)
+    return NextResponse.json(
+      { success: false, error: error.message || "Failed to connect to backend service." },
+      { status: 502 }
     )
   }
 }
