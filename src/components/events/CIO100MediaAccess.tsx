@@ -5,12 +5,14 @@ import { API_BASE_URL } from "@/portal/api/config"
 const SHAREPOINT_LINK = "https://globalcxocircle.sharepoint.com/:f:/s/EventPics/IgAJqikt6aK0RbRi3Kj37uYrAfHomYc1KFuY3Lk0Yh0jTM4?e=8OUcPv"
 
 function getGalleryLeadsEndpoint(): string {
-    const raw = API_BASE_URL || "https://gcio-backend-production.up.railway.app"
-    const cleaned = raw.replace(/\/$/, "")
-    if (cleaned.endsWith("/api")) {
-        return `${cleaned}/events/gallery-leads`
+    let raw = (API_BASE_URL || "").trim().replace(/\/$/, "")
+    if (!raw || raw.startsWith("/") || raw.includes("vercel.app") || raw.includes("global-cxo-mother-website")) {
+        raw = "https://gcio-backend-production.up.railway.app/api"
     }
-    return `${cleaned}/api/events/gallery-leads`
+    if (raw.endsWith("/api")) {
+        return `${raw}/events/gallery-leads`
+    }
+    return `${raw}/api/events/gallery-leads`
 }
 
 interface MediaItem {
@@ -121,16 +123,20 @@ export default function CIO100MediaAccess() {
                     consent,
                 }),
             })
-            const data = (await res.json().catch(() => ({}))) as { success?: boolean; detail?: any; error?: string }
+            const data = (await res.json().catch(() => ({}))) as any
             if (res.ok && (data.success !== false)) {
                 setStatus("success")
                 sessionStorage.setItem("cio100_gallery_unlocked", "true")
                 setIsUnlocked(true)
             } else {
-                const errMsg =
-                    typeof data.detail === "string"
-                        ? data.detail
-                        : data.error || "Failed to record response. Please try again."
+                let errMsg = "Failed to record response. Please try again."
+                if (typeof data.detail === "string") {
+                    errMsg = data.detail
+                } else if (Array.isArray(data.detail)) {
+                    errMsg = data.detail.map((e: any) => e.msg || JSON.stringify(e)).join(", ")
+                } else if (data.error) {
+                    errMsg = String(data.error)
+                }
                 setErrorMsg(errMsg)
                 setStatus("error")
             }
