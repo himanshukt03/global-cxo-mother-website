@@ -535,24 +535,29 @@ const Banner = () => {
                 @media (max-width: 991px) {
                     .hero-section {
                         margin-top: 0 !important;
-                        min-height: auto !important;
+                        min-height: 100svh !important;
+                        min-height: 100vh !important;
                         display: flex !important;
                         flex-direction: column !important;
-                        justify-content: flex-start !important;
+                        justify-content: center !important;
+                        align-items: center !important;
+                        padding-top: 76px !important;
+                        padding-bottom: 20px !important;
                     }
                     .hero-aurora-wrap {
                         flex: 1 !important;
                         display: flex !important;
                         flex-direction: column !important;
-                        justify-content: flex-start !important;
+                        justify-content: center !important;
                         align-items: center !important;
+                        width: 100% !important;
                         min-height: auto !important;
-                        padding-top: 68px !important;
-                        padding-bottom: 16px !important;
+                        padding-top: 0 !important;
+                        padding-bottom: 0 !important;
                         margin-top: 0 !important;
                     }
                     .hero-container {
-                        margin: 0 auto !important;
+                        margin: auto !important;
                     }
                     .hero-scroll-indicator {
                         display: inline-flex !important;
@@ -582,9 +587,12 @@ const Banner = () => {
                 }
                 @media (max-width: 768px) {
                     .hero-section {
-                        min-height: auto !important;
+                        min-height: 100svh !important;
+                        min-height: 100vh !important;
                         margin-top: 0 !important;
-                        padding-bottom: 12px !important;
+                        padding-top: 76px !important;
+                        padding-bottom: 20px !important;
+                        justify-content: center !important;
                         background: linear-gradient(160deg, #f0f4ff 0%, #f5f7ff 50%, #f0f2ff 100%);
                     }
                     .orbit-scene {
@@ -615,9 +623,13 @@ const Banner = () => {
                     }
                     .hero-aurora-wrap {
                         flex: 1 !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        justify-content: center !important;
+                        align-items: center !important;
                         min-height: auto !important;
-                        padding-top: 68px !important;
-                        padding-bottom: 12px !important;
+                        padding-top: 0 !important;
+                        padding-bottom: 0 !important;
                         margin-top: 0 !important;
                         background: transparent !important;
                     }
@@ -705,20 +717,27 @@ const Banner = () => {
                 }
                 
                 @media (max-width: 480px) {
-                    .hero-aurora-wrap {
-                        padding-top: 2px !important;
+                    .hero-section {
+                        min-height: 100svh !important;
+                        min-height: 100vh !important;
+                        padding-top: 72px !important;
                         padding-bottom: 16px !important;
+                        justify-content: center !important;
                     }
-                     .hero-subtitle {
+                    .hero-aurora-wrap {
+                        padding: 0 !important;
+                        justify-content: center !important;
+                    }
+                    .hero-subtitle {
                         margin-bottom: 8px !important;
-                     }
-                     .hero-title {
+                    }
+                    .hero-title {
                         font-size: 25px !important;
                         margin-bottom: 10px !important;
-                     }
-                     .hero-title .hero-title-gradient {
+                    }
+                    .hero-title .hero-title-gradient {
                         font-size: 26px !important;
-                     }
+                    }
                     .hero-desc {
                         font-size: 13.5px !important;
                         margin-bottom: 16px !important;
@@ -742,15 +761,23 @@ const Banner = () => {
                 }
                 
                 @media (max-width: 360px) {
-                    .hero-aurora-wrap {
-                        padding-top: 2px !important;
+                    .hero-section {
+                        min-height: 100svh !important;
+                        min-height: 100vh !important;
+                        padding-top: 68px !important;
+                        padding-bottom: 14px !important;
+                        justify-content: center !important;
                     }
-                     .hero-title {
+                    .hero-aurora-wrap {
+                        padding: 0 !important;
+                        justify-content: center !important;
+                    }
+                    .hero-title {
                         font-size: 23px !important;
-                     }
-                     .hero-title .hero-title-gradient {
+                    }
+                    .hero-title .hero-title-gradient {
                         font-size: 24px !important;
-                     }
+                    }
                     .hero-btn-group {
                         flex-direction: column !important;
                         gap: 10px !important;

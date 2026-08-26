@@ -164,11 +164,13 @@
 
 @media (max-width: 991px) {
     .hero-section {
-        min-height: auto !important;
-        padding: 0 0 16px 0 !important;
+        min-height: 100svh !important;
+        min-height: 100vh !important;
+        padding: 76px 0 20px 0 !important;
         display: flex !important;
         flex-direction: column !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
+        align-items: center !important;
         background: transparent !important;
     }
 
@@ -217,7 +219,10 @@
 
 @media (max-width: 767px) {
     .hero-section {
-        padding: 0;
+        min-height: 100svh !important;
+        min-height: 100vh !important;
+        padding: 76px 0 20px 0 !important;
+        justify-content: center !important;
         background: linear-gradient(160deg, #f0f4ff 0%, #f5f7ff 50%, #f0f2ff 100%) !important;
     }
 
