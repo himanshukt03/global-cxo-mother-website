@@ -104,13 +104,9 @@ export default function CIO100MediaAccess() {
         setStatus("submitting")
         setErrorMsg("")
 
-        // Instantly unlock gallery for a fast, seamless UX
-        sessionStorage.setItem("cio100_gallery_unlocked", "true")
-        setIsUnlocked(true)
-
         try {
             const endpoint = getGalleryLeadsEndpoint()
-            fetch(endpoint, {
+            const res = await fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -124,11 +120,23 @@ export default function CIO100MediaAccess() {
                     company: company.trim(),
                     consent,
                 }),
-            }).catch((err) => {
-                console.warn("Lead record note:", err)
             })
+            const data = (await res.json().catch(() => ({}))) as { success?: boolean; detail?: any; error?: string }
+            if (res.ok && (data.success !== false)) {
+                setStatus("success")
+                sessionStorage.setItem("cio100_gallery_unlocked", "true")
+                setIsUnlocked(true)
+            } else {
+                const errMsg =
+                    typeof data.detail === "string"
+                        ? data.detail
+                        : data.error || "Failed to record response. Please try again."
+                setErrorMsg(errMsg)
+                setStatus("error")
+            }
         } catch (err: any) {
-            console.warn("Lead record note:", err)
+            setErrorMsg("Network error — please check your connection and try again.")
+            setStatus("error")
         }
     }
 
@@ -306,12 +314,35 @@ export default function CIO100MediaAccess() {
                                             fontWeight: 700,
                                             fontSize: "15px",
                                             border: "none",
-                                            cursor: "pointer",
+                                            cursor: status === "submitting" ? "not-allowed" : "pointer",
                                             boxShadow: "0 6px 20px rgba(10,60,194,0.25)",
                                             transition: "all 0.3s ease",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "10px",
+                                            opacity: status === "submitting" ? 0.85 : 1,
                                         }}
                                     >
-                                        {status === "submitting" ? "Processing..." : "Submit & Access Gallery"}
+                                        {status === "submitting" ? (
+                                            <>
+                                                <svg
+                                                    width="18"
+                                                    height="18"
+                                                    viewBox="0 0 24 24"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    strokeWidth="2.5"
+                                                    style={{ animation: "spin 0.8s linear infinite" }}
+                                                >
+                                                    <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+                                                    <path d="M12 2a10 10 0 0 1 10 10" />
+                                                </svg>
+                                                <span>Unlocking Gallery...</span>
+                                            </>
+                                        ) : (
+                                            <span>Submit &amp; Access Gallery</span>
+                                        )}
                                     </button>
                                 </div>
                             </div>
@@ -325,6 +356,7 @@ export default function CIO100MediaAccess() {
                             padding: "clamp(24px, 3.5vw, 40px)",
                             boxShadow: "0 8px 30px rgba(11,26,74,0.06)",
                             border: "1px solid var(--tg-border-1, #e2e8f0)",
+                            animation: "fadeIn 0.35s ease-out",
                         }}
                     >
                         <div
