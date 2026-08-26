@@ -656,7 +656,7 @@ export function AuthProvider({ children }: { children: ReactNode }): React.React
           return result;
         } catch (err) {
           if (err instanceof Error && (err.message === '2FA_REQUIRED' || err.message === 'APPLICATION_PENDING' || err.message === 'PRE_EXISTING_PROFILE')) throw err;
-          return null;
+          throw err;
         }
       }
 

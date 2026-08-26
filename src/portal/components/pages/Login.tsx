@@ -62,8 +62,10 @@ const Login: React.FC = () => {
         setScreen('application-pending');
       } else if (err instanceof Error && err.message === 'PRE_EXISTING_PROFILE') {
         setScreen('pre-existing-profile');
+      } else if (err instanceof Error) {
+        setEmailError(err.message || 'No account exists with that email.');
       } else {
-        setEmailError('No account exists with that email.');
+        setEmailError('Unable to connect to the server. Please try again.');
       }
     } finally {
       setIsLoading(false);
