@@ -146,6 +146,9 @@ function mergeWithStaticEvents(loaded: EventDetail[]): EventDetail[] {
             merged.set(ev.slug, {
                 ...staticEv,
                 ...ev,
+                lifecycleStatus: staticEv.lifecycleStatus ?? ev.lifecycleStatus,
+                registrationOpen: staticEv.registrationOpen ?? ev.registrationOpen,
+                galleryUrl: staticEv.galleryUrl || ev.galleryUrl,
                 heroImage: staticEv.heroImage || ev.heroImage,
                 heroImageMobile: staticEv.heroImageMobile || ev.heroImageMobile || staticEv.heroImage,
                 cardImage: staticEv.cardImage || ev.cardImage || staticEv.heroImage,
@@ -336,11 +339,30 @@ const EventsPageContent = () => {
                         ) : list.length === 0 ? (
                             <div className="text-center" style={{ padding: "60px 20px" }}>
                                 <h3 style={{ fontSize: "24px", fontWeight: 700, color: "var(--tg-heading-color)", marginBottom: "12px" }}>
-                                    Something Big Is Coming
+                                    Next Gatherings Under Curation
                                 </h3>
-                                <p style={{ fontSize: "16px", color: "var(--tg-body-color)", maxWidth: "460px", margin: "0 auto" }}>
-                                    We&apos;re putting the finishing touches on our next exclusive summit. Stay tuned — announcements are dropping soon.
+                                <p style={{ fontSize: "16px", color: "var(--tg-body-color)", maxWidth: "520px", margin: "0 auto 24px", lineHeight: 1.6 }}>
+                                    We are currently preparing our next round of exclusive CXO summits and leadership retreats. Check back soon for upcoming announcements, or explore our past event highlights.
                                 </p>
+                                <button
+                                    onClick={() => setTab("past")}
+                                    style={{
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        gap: "8px",
+                                        background: "var(--tg-color-gradient)",
+                                        color: "#ffffff",
+                                        border: "none",
+                                        padding: "12px 28px",
+                                        borderRadius: "100px",
+                                        fontWeight: 700,
+                                        fontSize: "14.5px",
+                                        cursor: "pointer",
+                                        boxShadow: "0 4px 16px rgba(10,60,194,0.25)",
+                                    }}
+                                >
+                                    Explore Past Events →
+                                </button>
                             </div>
                         ) : (
                             <div className="row gutter-y-30 justify-content-center">

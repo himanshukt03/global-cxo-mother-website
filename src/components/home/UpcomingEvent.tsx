@@ -162,7 +162,15 @@ const UpcomingEvent = () => {
                             </div>
                         </Link>
                     </AnimateOnScroll>
-                ) : null}
+                ) : (
+                    <AnimateOnScroll delay={0.1}>
+                        <div className="text-center" style={{ maxWidth: "600px", margin: "0 auto 20px" }}>
+                            <p style={{ fontSize: "16px", color: "var(--tg-body-color)", lineHeight: 1.6 }}>
+                                Our upcoming executive summits and retreats are currently being curated. Stay tuned for upcoming announcements — in the meantime, explore highlights from our past events.
+                            </p>
+                        </div>
+                    </AnimateOnScroll>
+                )}
 
                 <AnimateOnScroll delay={0.2}>
                     <div className="text-center" style={{ marginTop: "40px" }}>

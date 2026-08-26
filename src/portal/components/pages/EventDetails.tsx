@@ -422,17 +422,43 @@ const EventDetails = ({ previewEvent }: { previewEvent?: EventDetail }) => {
                 </button>
               )}
 
-              {(event.brochureUrl || event.slug === 'cio-100-awards-conference') && (
-                <div className="mt-6">
-                  <a
-                    href={event.brochureUrl || "/resources/gcxo-cio100-Brochure.pdf"}
-                    download="CIO_100_Brochure.pdf"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-700 to-indigo-600 text-white font-bold hover:opacity-95 transition-all shadow-md"
-                  >
-                    <Download size={18} /> Download Brochure
-                  </a>
+              {(event.brochureUrl || event.slug === 'cio-100-awards-conference' || event.galleryUrl) && (
+                <div className="mt-6 flex flex-wrap items-center gap-3">
+                  {(event.brochureUrl || event.slug === 'cio-100-awards-conference') && (
+                    <a
+                      href={event.brochureUrl || "/resources/gcxo-cio100-Brochure.pdf"}
+                      download="CIO_100_Brochure.pdf"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-700 to-indigo-600 text-white font-bold hover:opacity-95 transition-all shadow-md text-sm"
+                    >
+                      <Download size={18} /> Download Brochure
+                    </a>
+                  )}
+
+                  {event.galleryUrl && (() => {
+                    const isInternal = event.galleryUrl.startsWith('/') ||
+                      event.galleryUrl.includes('globalcxocircle.com') ||
+                      event.galleryUrl.includes('global-cxo-mother-website.vercel.app');
+
+                    return isInternal ? (
+                      <Link
+                        to={event.galleryUrl}
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-700 to-indigo-600 text-white font-bold hover:opacity-95 transition-all shadow-md text-sm"
+                      >
+                        View Event Gallery
+                      </Link>
+                    ) : (
+                      <a
+                        href={event.galleryUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-700 to-indigo-600 text-white font-bold hover:opacity-95 transition-all shadow-md text-sm"
+                      >
+                        View Event Gallery
+                      </a>
+                    );
+                  })()}
                 </div>
               )}
             </div>
