@@ -104,9 +104,13 @@ export default function CIO100MediaAccess() {
         setStatus("submitting")
         setErrorMsg("")
 
+        // Instantly unlock gallery for a fast, seamless UX
+        sessionStorage.setItem("cio100_gallery_unlocked", "true")
+        setIsUnlocked(true)
+
         try {
             const endpoint = getGalleryLeadsEndpoint()
-            const res = await fetch(endpoint, {
+            fetch(endpoint, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -120,23 +124,11 @@ export default function CIO100MediaAccess() {
                     company: company.trim(),
                     consent,
                 }),
+            }).catch((err) => {
+                console.warn("Lead record note:", err)
             })
-            const data = (await res.json().catch(() => ({}))) as { success?: boolean; detail?: any; error?: string }
-            if (res.ok && (data.success !== false)) {
-                setStatus("success")
-                sessionStorage.setItem("cio100_gallery_unlocked", "true")
-                setIsUnlocked(true)
-            } else {
-                const errMsg =
-                    typeof data.detail === "string"
-                        ? data.detail
-                        : data.error || "Failed to record response. Please try again."
-                setErrorMsg(errMsg)
-                setStatus("error")
-            }
         } catch (err: any) {
-            setErrorMsg("Network error — please check your connection and try again.")
-            setStatus("error")
+            console.warn("Lead record note:", err)
         }
     }
 
