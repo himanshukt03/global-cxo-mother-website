@@ -14,6 +14,7 @@ export interface ApiEventJson {
   registration_open: boolean;
   lifecycle_status: string;
   luma_event_url: string | null;
+  gallery_url: string | null;
   visibility_setting: Record<string, unknown>;
   event_metadata: Record<string, unknown>;
   venue: Record<string, unknown>;

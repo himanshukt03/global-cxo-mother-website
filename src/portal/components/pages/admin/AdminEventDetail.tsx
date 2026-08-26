@@ -151,6 +151,7 @@ interface EditorState {
   ctaSecondaryLabel: string;
   ctaSecondaryUrl: string;
   lumaUrl: string;
+  galleryUrl: string;
   highlights: string;
   livestreamUrl: string;
   lifecycleStatus: EventLifecycleStatus;
@@ -187,6 +188,7 @@ function buildEditorState(event: EventDetailType): EditorState {
     ctaSecondaryLabel: event.cta?.secondaryLabel ?? '',
     ctaSecondaryUrl: event.cta?.secondaryUrl ?? '',
     lumaUrl: (event.cta?.isExternal ? event.cta.primaryUrl : '') ?? '',
+    galleryUrl: event.galleryUrl ?? '',
     highlights: event.highlights.join('\n'),
     livestreamUrl: event.livestreamUrl ?? '',
     lifecycleStatus: event.lifecycleStatus ?? (event.registrationOpen ? 'current' : 'past'),
@@ -1456,6 +1458,21 @@ function SettingsTab({
         </CardContent>
       </Card>
 
+      {/* Gallery Link */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Gallery Link</CardTitle>
+          <CardDescription>Optional internal or external gallery link. If populated, a Gallery button renders on the event page.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Input
+            value={form.galleryUrl}
+            onChange={(e) => setForm((prev) => ({ ...prev, galleryUrl: e.target.value }))}
+            placeholder="https://... or /gallery/cio-100-awards-conference"
+          />
+        </CardContent>
+      </Card>
+
       {/* Luma Integration */}
       <Card>
         <CardHeader>
@@ -1931,6 +1948,7 @@ export default function AdminEventDetail(): JSX.Element {
           registration_open: form.registrationOpen,
           lifecycle_status: form.lifecycleStatus,
           luma_event_url: form.lumaUrl || null,
+          gallery_url: form.galleryUrl || null,
           venue: {
             name: form.venueName,
             address: form.venueAddress,

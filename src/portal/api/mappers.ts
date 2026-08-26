@@ -281,6 +281,7 @@ export function mapApiEventToEventDetail(raw: ApiEventJson, registrationCount: n
         ? raw.lifecycle_status
         : 'current',
     registrationOpen: raw.registration_open,
+    galleryUrl: raw.gallery_url?.trim() || template?.galleryUrl || undefined,
     cta: buildCtaFromApi(raw),
     metadata: {
       title:

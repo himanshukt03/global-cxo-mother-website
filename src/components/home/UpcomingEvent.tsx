@@ -117,7 +117,7 @@ const UpcomingEvent = () => {
                                 {(event.heroImage || event.bannerImage) && (
                                     <div className="upcoming-event-banner-wrap" style={{ position: "relative", width: "100%", aspectRatio: event.slug === 'cio-100-awards-conference' ? "1502 / 711" : "16 / 10", overflow: "hidden", background: event.slug === 'cio-100-awards-conference' ? "#060179" : "#0b1020" }}>
                                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={event.slug === 'cio-100-awards-conference' ? '/events/cio100Step&Repeat Banner.png' : (event.heroImage || event.bannerImage || '')} alt={event.title}
+                                        <img src={event.slug === 'cio-100-awards-conference' ? '/events/cio100Step%26Repeat%20Banner.png' : (event.heroImage || event.bannerImage || '')} alt={event.title}
                                             className="upcoming-event-img"
                                             style={{ width: "100%", height: "100%", objectFit: event.slug === 'cio-100-awards-conference' ? "contain" : "cover", display: "block", transition: "transform 0.4s ease" }} />
                                     </div>
@@ -162,7 +162,15 @@ const UpcomingEvent = () => {
                             </div>
                         </Link>
                     </AnimateOnScroll>
-                ) : null}
+                ) : (
+                    <AnimateOnScroll delay={0.1}>
+                        <div className="text-center" style={{ maxWidth: "600px", margin: "0 auto 20px" }}>
+                            <p style={{ fontSize: "16px", color: "var(--tg-body-color)", lineHeight: 1.6 }}>
+                                Our upcoming executive summits and retreats are currently being curated. Stay tuned for upcoming announcements — in the meantime, explore highlights from our past events.
+                            </p>
+                        </div>
+                    </AnimateOnScroll>
+                )}
 
                 <AnimateOnScroll delay={0.2}>
                     <div className="text-center" style={{ marginTop: "40px" }}>

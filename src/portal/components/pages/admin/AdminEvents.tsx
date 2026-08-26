@@ -5,7 +5,7 @@ import { Badge } from '@/portal/components/ui/badge';
 import { Button } from '@/portal/components/ui/button';
 import { Card } from '@/portal/components/ui/card';
 import { useAuth } from '@/portal/hooks/useAuth';
-import { resolveEventLifecycle } from '@/portal/lib/eventLifecycle';
+import { resolveEventLifecycle, parseEventDateTimestamp } from '@/portal/lib/eventLifecycle';
 import { EventCardListSkeleton } from '@/portal/components/ui/admin-skeletons';
 
 const STATUS_COLORS: Record<string, string> = {
@@ -21,7 +21,8 @@ export default function AdminEvents(): JSX.Element {
     const order = { current: 0, past: 1, archived: 2 };
     const sa = order[resolveEventLifecycle(a)] ?? 1;
     const sb = order[resolveEventLifecycle(b)] ?? 1;
-    return sa - sb;
+    if (sa !== sb) return sa - sb;
+    return parseEventDateTimestamp(b) - parseEventDateTimestamp(a);
   });
 
   return (

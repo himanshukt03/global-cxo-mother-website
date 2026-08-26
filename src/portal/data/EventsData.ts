@@ -96,6 +96,7 @@ export interface EventDetail {
   venue: VenueInfo;
   livestreamUrl?: string;
   brochureUrl?: string;
+  galleryUrl?: string;
 }
 
 const sriLankaHighlightCards: HighlightCard[] = [
@@ -134,7 +135,7 @@ export const eventsData: EventDetail[] = [
     attendees: '400+ CIOs and CxOs',
     heroImage: '/events/cio100-banner.png',
     heroImageMobile: '/events/cio100-banner.png',
-    cardImage: '/events/cio100Step&Repeat Banner.png',
+    cardImage: '/events/cio100Step%26Repeat%20Banner.png',
     bannerImage: '/events/cio100-banner.png',
     gallery: [],
     overview:
@@ -156,14 +157,15 @@ export const eventsData: EventDetail[] = [
       'Photo Opportunities and Entertainment',
     ],
     highlightCards: [],
-    registrationOpen: true,
-    lifecycleStatus: 'current',
-    showHeroPromo: true,
+    registrationOpen: false,
+    lifecycleStatus: 'past',
+    showHeroPromo: false,
     brochureUrl: '/resources/gcxo-cio100-Brochure.pdf',
+    galleryUrl: '/gallery/cio-100-awards-conference',
     cta: {
-      primaryLabel: 'Register Now',
-      primaryUrl: 'https://luma.com/cp6uhp3g',
-      isExternal: true,
+      primaryLabel: 'Download Media & Gallery',
+      primaryUrl: '/gallery/cio-100-awards-conference',
+      isExternal: false,
     },
     metadata: {
       title: 'Global CXO Circle | CIO 100 Awards & Conference',

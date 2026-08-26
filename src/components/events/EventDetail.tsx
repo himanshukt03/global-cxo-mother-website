@@ -7,6 +7,7 @@ import Footer from "@/layouts/footers/Footer"
 import eventsData, { type EventDetail as EventDetailType } from "@/data/EventsData"
 import type { ItineraryItem } from "@/data/itinerary"
 import { loadMockDatabaseSnapshot } from "@/portal/lib/mockDatabase"
+import CIO100MediaAccess from "./CIO100MediaAccess"
 
 function mergeWithStaticEvents(loaded: EventDetailType[]): EventDetailType[] {
     const staticMap = new Map(eventsData.map((e) => [e.slug, e]))
@@ -36,6 +37,24 @@ function mergeWithStaticEvents(loaded: EventDetailType[]): EventDetailType[] {
         }
     }
     return Array.from(merged.values())
+}
+
+function isInternalUrl(url?: string): boolean {
+    if (!url) return false;
+    if (url.startsWith('/')) return true;
+    try {
+        const parsed = new URL(url, typeof window !== 'undefined' ? window.location.href : 'https://globalcxocircle.com');
+        const host = parsed.hostname.toLowerCase();
+        return (
+            host === 'globalcxocircle.com' ||
+            host.endsWith('.globalcxocircle.com') ||
+            host === 'global-cxo-mother-website.vercel.app' ||
+            host.endsWith('.vercel.app') ||
+            (typeof window !== 'undefined' && host === window.location.hostname)
+        );
+    } catch {
+        return false;
+    }
 }
 
 /* ---- Icons ---- */
@@ -255,97 +274,35 @@ const EventDetail = ({ slug, previewEvent }: { slug?: string; previewEvent?: Eve
                                                     <span style={{ color: "#0a3cc2" }}><PinIcon s={19} /></span>
                                                     <span suppressHydrationWarning>{event.location}</span>
                                                 </div>
-                                                {event.registrationOpen !== false && (
-                                                    <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", marginTop: "4px" }}>
-                                                        {event.slug === 'cio-100-awards-conference' ? (
-                                                            <>
-                                                                <div style={{
-                                                                    background: "#ffffff",
-                                                                    border: "1px solid rgba(10, 60, 194, 0.14)",
-                                                                    borderRadius: "16px",
-                                                                    padding: "18px 22px",
-                                                                    boxShadow: "0 8px 24px rgba(10, 60, 194, 0.07)",
-                                                                    display: "flex",
-                                                                    flexDirection: "column",
-                                                                    gap: "12px",
-                                                                    flex: "1 1 240px",
-                                                                    maxWidth: "320px"
-                                                                }}>
-                                                                    <span style={{ fontSize: "13.5px", fontWeight: 500, color: "#334155", lineHeight: 1.4 }}>
-                                                                        Book your Executive Video Byte session
-                                                                    </span>
-                                                                    <a
-                                                                        href="https://calendly.com/leningali/cio100"
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="hero-cta-btn"
-                                                                        style={{
-                                                                            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px",
-                                                                            background: "var(--tg-color-gradient)", color: "#fff",
-                                                                            padding: "11px 22px", borderRadius: "100px", fontWeight: 700,
-                                                                            fontSize: "13.5px", textDecoration: "none",
-                                                                            boxShadow: "0 6px 18px rgba(10,60,194,0.25)", transition: "all 0.3s ease",
-                                                                            width: "100%"
-                                                                        }}
-                                                                    >
-                                                                        Register via Calendly <ArrowIcon />
-                                                                    </a>
-                                                                </div>
 
-                                                                <div style={{
-                                                                    background: "#ffffff",
-                                                                    border: "1px solid rgba(10, 60, 194, 0.14)",
-                                                                    borderRadius: "16px",
-                                                                    padding: "18px 22px",
-                                                                    boxShadow: "0 8px 24px rgba(10, 60, 194, 0.07)",
-                                                                    display: "flex",
-                                                                    flexDirection: "column",
-                                                                    gap: "12px",
-                                                                    flex: "1 1 240px",
-                                                                    maxWidth: "320px"
-                                                                }}>
-                                                                    <span style={{ fontSize: "13.5px", fontWeight: 500, color: "#334155", lineHeight: 1.4 }}>
-                                                                        Golf at PGA Frisco
-                                                                    </span>
-                                                                    <a
-                                                                        href="https://luma.com/cp6uhp3g"
-                                                                        target="_blank"
-                                                                        rel="noopener noreferrer"
-                                                                        className="hero-cta-btn"
-                                                                        style={{
-                                                                            display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "8px",
-                                                                            background: "#fff", color: "#0a3cc2",
-                                                                            padding: "11px 22px", borderRadius: "100px", fontWeight: 700,
-                                                                            fontSize: "13.5px", textDecoration: "none",
-                                                                            border: "1.5px solid #0a3cc2",
-                                                                            boxShadow: "0 4px 14px rgba(10,60,194,0.1)", transition: "all 0.3s ease",
-                                                                            width: "100%"
-                                                                        }}
-                                                                    >
-                                                                        Register via Luma <ArrowIcon />
-                                                                    </a>
-                                                                </div>
-                                                            </>
-                                                        ) : (
-                                                            <a
-                                                                suppressHydrationWarning
-                                                                href={event.cta?.primaryUrl && event.cta.primaryUrl !== '/events/cio-100-awards-conference' ? event.cta.primaryUrl : ((event as any).lumaUrl || (event as any).lumaEventUrl || "https://calendly.com/leningali/cio100")}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="hero-cta-btn"
-                                                                style={{
-                                                                    display: "inline-flex", alignItems: "center", gap: "10px",
-                                                                    background: "var(--tg-color-gradient)", color: "#fff",
-                                                                    padding: "14px 34px", borderRadius: "100px", fontWeight: 700,
-                                                                    fontSize: "15px", textDecoration: "none",
-                                                                    boxShadow: "0 8px 24px rgba(10,60,194,0.28)", transition: "all 0.3s ease",
-                                                                }}
-                                                            >
-                                                                Register Now <ArrowIcon />
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                )}
+                                                {event.galleryUrl && (() => {
+                                                    const isInternal = isInternalUrl(event.galleryUrl);
+                                                    const heroGalleryBtnStyle: React.CSSProperties = {
+                                                        marginTop: "14px",
+                                                        display: "inline-flex",
+                                                        alignItems: "center",
+                                                        gap: "10px",
+                                                        background: "var(--tg-color-gradient)",
+                                                        color: "#ffffff",
+                                                        padding: "13px 30px",
+                                                        borderRadius: "100px",
+                                                        fontWeight: 700,
+                                                        fontSize: "15px",
+                                                        textDecoration: "none",
+                                                        boxShadow: "0 8px 24px rgba(10, 60, 194, 0.28)",
+                                                        transition: "all 0.3s ease",
+                                                        alignSelf: "flex-start",
+                                                    };
+                                                    return isInternal ? (
+                                                        <Link href={event.galleryUrl} className="hero-cta-btn" style={heroGalleryBtnStyle}>
+                                                            View Event Gallery <ArrowIcon />
+                                                        </Link>
+                                                    ) : (
+                                                        <a href={event.galleryUrl} target="_blank" rel="noopener noreferrer" className="hero-cta-btn" style={heroGalleryBtnStyle}>
+                                                            View Event Gallery <ArrowIcon />
+                                                        </a>
+                                                    );
+                                                })()}
                                             </div>
                                         </div>
                                     </div>
@@ -445,15 +402,37 @@ const EventDetail = ({ slug, previewEvent }: { slug?: string; previewEvent?: Eve
                                 </button>
                             )}
 
-                            {(event.brochureUrl || event.slug === 'cio-100-awards-conference') && (
-                                <div style={{ marginTop: "24px" }}>
-                                    <a
-                                        href={event.brochureUrl || "/resources/gcxo-cio100-Brochure.pdf"}
-                                        download="CIO_100_Brochure.pdf"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="cio-action-btn"
-                                        style={{
+                            {(event.brochureUrl || event.slug === 'cio-100-awards-conference' || event.galleryUrl) && (
+                                <div style={{ marginTop: "24px", display: "flex", gap: "14px", flexWrap: "wrap", alignItems: "center" }}>
+                                    {(event.brochureUrl || event.slug === 'cio-100-awards-conference') && (
+                                        <a
+                                            href={event.brochureUrl || "/resources/gcxo-cio100-Brochure.pdf"}
+                                            download="CIO_100_Brochure.pdf"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="cio-action-btn"
+                                            style={{
+                                                display: "inline-flex",
+                                                alignItems: "center",
+                                                gap: "10px",
+                                                background: "var(--tg-color-gradient)",
+                                                color: "#ffffff",
+                                                padding: "12px 26px",
+                                                borderRadius: "100px",
+                                                fontWeight: 700,
+                                                fontSize: "15px",
+                                                textDecoration: "none",
+                                                boxShadow: "0 4px 15px rgba(10, 60, 194, 0.2)",
+                                                transition: "all 0.3s ease"
+                                            }}
+                                        >
+                                            <DownloadIcon s={18} /> Download Brochure
+                                        </a>
+                                    )}
+
+                                    {event.galleryUrl && (() => {
+                                        const isInternal = isInternalUrl(event.galleryUrl);
+                                        const galleryBtnStyle: React.CSSProperties = {
                                             display: "inline-flex",
                                             alignItems: "center",
                                             gap: "10px",
@@ -466,77 +445,27 @@ const EventDetail = ({ slug, previewEvent }: { slug?: string; previewEvent?: Eve
                                             textDecoration: "none",
                                             boxShadow: "0 4px 15px rgba(10, 60, 194, 0.2)",
                                             transition: "all 0.3s ease"
-                                        }}
-                                    >
-                                        <DownloadIcon s={18} /> Download Brochure
-                                    </a>
+                                        };
+                                        return isInternal ? (
+                                            <Link href={event.galleryUrl} className="cio-action-btn" style={galleryBtnStyle}>
+                                                View Event Gallery <ArrowIcon />
+                                            </Link>
+                                        ) : (
+                                            <a
+                                                href={event.galleryUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="cio-action-btn"
+                                                style={galleryBtnStyle}
+                                            >
+                                                View Event Gallery <ArrowIcon />
+                                            </a>
+                                        );
+                                    })()}
                                 </div>
                             )}
                         </div>
                     )}
-
-                    {/* ── CIO 100: Video Bites + Tee Times (side by side) ── */}
-                    {event.slug === 'cio-100-awards-conference' && (() => {
-                        const cardBoxStyle: React.CSSProperties = {
-                            flex: 1, minWidth: "260px",
-                            border: "1px solid var(--tg-border-1)", borderRadius: "14px",
-                            padding: "28px 26px", display: "flex", flexDirection: "column", gap: "12px",
-                        };
-                        const buttonStyle: React.CSSProperties = {
-                            marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "8px",
-                            background: "var(--tg-color-gradient)", color: "#fff",
-                            padding: "11px 22px", borderRadius: "100px",
-                            fontWeight: 700, fontSize: "14px", textDecoration: "none",
-                            alignSelf: "flex-start", transition: "opacity 0.2s ease",
-                        };
-                        const rawLumaUrl = event.cta?.primaryUrl && event.cta.primaryUrl !== '/events/cio-100-awards-conference'
-                            ? event.cta.primaryUrl
-                            : ((event as any).lumaUrl || (event as any).lumaEventUrl || null);
-const lumaHref = rawLumaUrl || "https://lu.ma";
-const isExternalLuma = /^https?:\/\//.test(lumaHref);
-
-                        return (
-                            <div style={{ display: "flex", gap: "20px", marginBottom: "80px", flexWrap: "wrap" }}>
-                                {/* Video Bites */}
-                                <div style={cardBoxStyle}>
-                                    <p style={{ margin: 0, fontWeight: 700, fontSize: "11px", textTransform: "uppercase", letterSpacing: "1.2px", color: "var(--tg-theme-primary)" }}>🎥 Video Bites</p>
-                                    <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 700, color: "var(--tg-heading-color)", lineHeight: 1.3 }}>Book your Executive Video Byte session</h3>
-                                    <p style={{ margin: 0, fontSize: "14px", color: "var(--tg-body-color)", lineHeight: 1.6 }}>
-                                        Schedule a short video meeting with our team ahead of CIO 100.
-                                    </p>
-                                    <a
-                                        href="https://calendly.com/leningali/cio100"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        id="cio100-video-bites-calendly-btn"
-                                        className="cio-action-btn"
-                                        style={buttonStyle}
-                                    >
-                                        Schedule on Calendly <ArrowIcon />
-                                    </a>
-                                </div>
-
-                                {/* Tee Times */}
-                                <div style={cardBoxStyle}>
-                                    <p style={{ margin: 0, fontWeight: 700, fontSize: "11px", textTransform: "uppercase", letterSpacing: "1.2px", color: "var(--tg-theme-primary)" }}>⛳ Tee Times</p>
-                                    <h3 style={{ margin: 0, fontSize: "20px", fontWeight: 700, color: "var(--tg-heading-color)", lineHeight: 1.3 }}>Golf at PGA Frisco</h3>
-                                    <p style={{ margin: 0, fontSize: "14px", color: "var(--tg-body-color)", lineHeight: 1.6 }}>
-                                        Reserve a tee time and network with fellow CIOs on the course.
-                                    </p>
-                                    <a
-                                        href={lumaHref}
-                                        target={isExternalLuma ? "_blank" : "_self"}
-                                        rel={isExternalLuma ? "noopener noreferrer" : undefined}
-                                        id="cio100-tee-times-luma-btn"
-                                        className="cio-action-btn"
-                                        style={buttonStyle}
-                                    >
-                                        Register on Luma <ArrowIcon />
-                                    </a>
-                                </div>
-                            </div>
-                        );
-                    })()}
 
 
                     {/* Sponsors */}

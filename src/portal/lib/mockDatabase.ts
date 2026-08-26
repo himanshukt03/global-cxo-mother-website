@@ -49,6 +49,9 @@ export function loadMockDatabaseSnapshot(): MockDatabaseSnapshot {
           return {
             ...ev,
             ...staticEv,
+            lifecycleStatus: staticEv.lifecycleStatus ?? ev.lifecycleStatus,
+            registrationOpen: staticEv.registrationOpen ?? ev.registrationOpen,
+            galleryUrl: staticEv.galleryUrl || ev.galleryUrl,
             heroImage: staticEv.heroImage || ev.heroImage,
             heroImageMobile: staticEv.heroImageMobile || ev.heroImageMobile,
             cardImage: staticEv.cardImage || ev.cardImage,
