@@ -426,9 +426,9 @@ export default function CIO100MediaAccess() {
                         </div>
 
                         {/* Media Thumbnail Grid / Collage */}
-                        <div className="row g-2">
+                        <div className="row gx-1 gy-2">
                             {mediaItems.map((item) => (
-                                <div key={item.id} className="col-6 col-md-4 col-lg-3">
+                                <div key={item.id} className="col-6 col-md-3">
                                     <div
                                         style={{
                                             borderRadius: "6px",
