@@ -116,9 +116,9 @@ export default function CIO100MediaAccess() {
                 setErrorMsg(data.error || "Failed to record response. Please try again.")
                 setStatus("error")
             }
-        } catch {
-            sessionStorage.setItem("cio100_gallery_unlocked", "true")
-            setIsUnlocked(true)
+        } catch (err: any) {
+            setErrorMsg("Network error — please check your connection and try again.")
+            setStatus("error")
         }
     }
 
