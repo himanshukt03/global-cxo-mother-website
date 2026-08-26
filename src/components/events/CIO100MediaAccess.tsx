@@ -57,6 +57,7 @@ function checkIsUnlocked(): boolean {
 }
 
 export default function CIO100MediaAccess() {
+    const [isHydrated, setIsHydrated] = useState(false)
     const [isUnlocked, setIsUnlocked] = useState(false)
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
@@ -69,9 +70,8 @@ export default function CIO100MediaAccess() {
 
     // Check if user has already unlocked the gallery within the last 7 days
     useEffect(() => {
-        if (checkIsUnlocked()) {
-            setIsUnlocked(true)
-        }
+        setIsUnlocked(checkIsUnlocked())
+        setIsHydrated(true)
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -160,7 +160,28 @@ export default function CIO100MediaAccess() {
     return (
         <section id="media-download" style={{ padding: "60px 0", background: "var(--tg-common-color-grey-1, #f8f9fa)" }}>
             <div className="container" style={{ maxWidth: "980px" }}>
-                {!isUnlocked ? (
+                {!isHydrated ? (
+                    <div
+                        style={{
+                            background: "#ffffff",
+                            borderRadius: "20px",
+                            padding: "clamp(28px, 4vw, 48px)",
+                            border: "1px solid var(--tg-border-1, #e2e8f0)",
+                            boxShadow: "0 8px 30px rgba(11,26,74,0.06)",
+                            minHeight: "420px",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "12px",
+                            opacity: 0.6,
+                        }}
+                    >
+                        <div style={{ width: "120px", height: "14px", background: "#e2e8f0", borderRadius: "6px" }} />
+                        <div style={{ width: "340px", maxWidth: "85%", height: "26px", background: "#e2e8f0", borderRadius: "8px" }} />
+                        <div style={{ width: "240px", maxWidth: "65%", height: "14px", background: "#f1f5f9", borderRadius: "6px" }} />
+                    </div>
+                ) : !isUnlocked ? (
                     <div
                         style={{
                             background: "#ffffff",
