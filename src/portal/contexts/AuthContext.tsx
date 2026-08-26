@@ -87,6 +87,7 @@ type EventMutationInput = {
   ctaSecondaryLabel?: string;
   ctaSecondaryUrl?: string;
   lumaUrl?: string;
+  galleryUrl?: string;
   highlights?: string[];
   highlightCards?: HighlightCard[];
   speakers?: Speaker[];
@@ -186,6 +187,7 @@ export interface AuthContextType {
     venueImage?: string;
     venueMapEmbedUrl?: string;
     lumaUrl?: string;
+    galleryUrl?: string;
     heroImage?: string;
     bannerImage?: string;
     ctaPrimaryLabel?: string;
@@ -1346,6 +1348,7 @@ export function AuthProvider({ children }: { children: ReactNode }): React.React
         sponsors: updates.sponsors ?? existing.sponsors,
         itinerary: updates.itinerary ?? existing.itinerary,
         livestreamUrl: updates.livestreamUrl !== undefined ? updates.livestreamUrl.trim() : existing.livestreamUrl,
+        galleryUrl: updates.galleryUrl !== undefined ? updates.galleryUrl.trim() : existing.galleryUrl,
         lifecycleStatus: nextLifecycleStatus,
         registrationOpen: nextRegistrationOpen,
         showHeroPromo: nextShowHeroPromo,
@@ -1406,6 +1409,9 @@ export function AuthProvider({ children }: { children: ReactNode }): React.React
           if (updates.lifecycleStatus !== undefined) body.lifecycle_status = updates.lifecycleStatus;
           if (updates.lumaUrl !== undefined) {
             body.luma_event_url = updates.lumaUrl.trim() || null;
+          }
+          if (updates.galleryUrl !== undefined) {
+            body.gallery_url = updates.galleryUrl.trim() || null;
           }
           if (updates.venueName !== undefined || updates.venueAddress !== undefined || updates.venueDescription !== undefined) {
             body.venue = {

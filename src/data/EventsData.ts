@@ -96,6 +96,7 @@ export interface EventDetail {
   venue: VenueInfo;
   livestreamUrl?: string;
   brochureUrl?: string;
+  galleryUrl?: string;
 }
 
 const sriLankaHighlightCards: HighlightCard[] = [
@@ -136,7 +137,12 @@ export const eventsData: EventDetail[] = [
     heroImageMobile: '/events/cio100-banner.png',
     cardImage: '/events/cio100Step&Repeat Banner.png',
     bannerImage: '/events/cio100-banner.png',
-    gallery: [],
+    gallery: [
+      '/events/cio100-banner.png',
+      '/events/cio100Step&Repeat Banner.png',
+      '/events/cio100flyer.png',
+      '/events/cio100-hero.png',
+    ],
     overview:
       'See what’s working inside leading enterprises as CIO Hall of Fame inductees, CIO 100 honorees, and technology leaders share how they’re scaling AI, accelerating transformation, and delivering measurable business results.\n\nFor more than four decades, the CIO 100 Awards has recognized organizations that use technology to drive business value, innovation, and competitive advantage. Today, the CIO 100 Awards & Conference brings together the leaders behind those achievements to share what’s working—and what’s next.',
     objectives: [
@@ -156,14 +162,15 @@ export const eventsData: EventDetail[] = [
       'Photo Opportunities and Entertainment',
     ],
     highlightCards: [],
-    registrationOpen: true,
-    lifecycleStatus: 'current',
-    showHeroPromo: true,
+    registrationOpen: false,
+    lifecycleStatus: 'past',
+    showHeroPromo: false,
     brochureUrl: '/resources/gcxo-cio100-Brochure.pdf',
+    galleryUrl: '/gallery/cio-100-awards-conference',
     cta: {
-      primaryLabel: 'Register Now',
-      primaryUrl: 'https://luma.com/cp6uhp3g',
-      isExternal: true,
+      primaryLabel: 'Download Media & Gallery',
+      primaryUrl: '/gallery/cio-100-awards-conference',
+      isExternal: false,
     },
     metadata: {
       title: 'Global CXO Circle | CIO 100 Awards & Conference',
