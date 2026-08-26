@@ -1,47 +1,50 @@
 import { NextResponse } from "next/server"
+import { neon } from "@neondatabase/serverless"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
 
-    // Use API_BASE_URL (server-side private var) with fallback to NEXT_PUBLIC variant
-    // API_BASE_URL is not exposed to the client — correct for server-side route calls
-    const backendUrl = (
-      process.env.API_BASE_URL ||
-      process.env.NEXT_PUBLIC_API_BASE_URL ||
-      "http://localhost:8000"
-    ).replace(/\/$/, "")
-
-    const endpoint = `${backendUrl}/api/events/gallery-leads`
-
-    const payload = {
-      event_slug: (body.event_slug || "cio-100-awards-conference").trim(),
-      first_name: (body.first_name || "").trim(),
-      last_name: (body.last_name || "").trim(),
-      email: (body.email || "").trim().toLowerCase(),
-      company: (body.company || "").trim(),
-      consent: body.consent ?? true,
+    const databaseUrl = process.env.DATABASE_URL
+    if (!databaseUrl) {
+      console.error("[gallery-leads] DATABASE_URL env var is not set")
+      return NextResponse.json(
+        { success: false, error: "Server configuration error." },
+        { status: 500 }
+      )
     }
 
-    const res = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    })
+    const sql = neon(databaseUrl)
 
-    if (res.ok) {
-      return NextResponse.json({ success: true, database: "neon" })
-    }
+    // Ensure table exists (safe no-op if already created)
+    await sql`
+      CREATE TABLE IF NOT EXISTS gallery_leads (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        event_slug VARCHAR(160) NOT NULL,
+        first_name VARCHAR(120) NOT NULL,
+        last_name VARCHAR(120) NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        company VARCHAR(255) NOT NULL,
+        consent BOOLEAN NOT NULL DEFAULT TRUE,
+        created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      )
+    `
 
-    // Surface the backend error so we can diagnose it
-    const errorText = await res.text().catch(() => "unknown")
-    console.error(`[gallery-leads] Backend responded ${res.status}: ${errorText}`)
-    return NextResponse.json(
-      { success: false, error: `Backend error ${res.status}: ${errorText}` },
-      { status: res.status }
-    )
+    const eventSlug = (body.event_slug || "cio-100-awards-conference").trim()
+    const firstName = (body.first_name || "").trim()
+    const lastName = (body.last_name || "").trim()
+    const email = (body.email || "").trim().toLowerCase()
+    const company = (body.company || "").trim()
+    const consent = body.consent ?? true
+
+    await sql`
+      INSERT INTO gallery_leads (event_slug, first_name, last_name, email, company, consent)
+      VALUES (${eventSlug}, ${firstName}, ${lastName}, ${email}, ${company}, ${consent})
+    `
+
+    return NextResponse.json({ success: true, database: "neon" })
   } catch (error: any) {
-    console.error("[gallery-leads] Unexpected error:", error)
+    console.error("[gallery-leads] Error:", error)
     return NextResponse.json(
       { success: false, error: error.message || "Internal server error." },
       { status: 500 }
