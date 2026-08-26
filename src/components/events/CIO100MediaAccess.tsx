@@ -32,6 +32,30 @@ const mediaItems: MediaItem[] = [
     { id: "8", thumb: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-131.jpg", full: "/events/cio100-gallery/CIO100%20Awards%20%26%20Conference-131.jpg" },
 ]
 
+const ACCESS_EXPIRY_MS = 7 * 24 * 60 * 60 * 1000 // 7 days
+const STORAGE_KEY = "gcxo_gallery_access_cio100"
+
+function checkIsUnlocked(): boolean {
+    if (typeof window === "undefined") return false
+    try {
+        const stored = localStorage.getItem(STORAGE_KEY)
+        if (!stored) return false
+        const parsed = JSON.parse(stored)
+        if (parsed?.unlocked && parsed?.unlockedAt) {
+            const age = Date.now() - Number(parsed.unlockedAt)
+            if (age < ACCESS_EXPIRY_MS) {
+                return true
+            }
+            localStorage.removeItem(STORAGE_KEY)
+        }
+    } catch {
+        try {
+            if (localStorage.getItem(STORAGE_KEY) === "true") return true
+        } catch {}
+    }
+    return false
+}
+
 export default function CIO100MediaAccess() {
     const [isUnlocked, setIsUnlocked] = useState(false)
     const [firstName, setFirstName] = useState("")
@@ -43,9 +67,11 @@ export default function CIO100MediaAccess() {
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
     const [errorMsg, setErrorMsg] = useState("")
 
-    // Require form submission to unlock gallery for lead capture
+    // Check if user has already unlocked the gallery within the last 7 days
     useEffect(() => {
-        setIsUnlocked(false)
+        if (checkIsUnlocked()) {
+            setIsUnlocked(true)
+        }
     }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -101,7 +127,12 @@ export default function CIO100MediaAccess() {
 
             if (res && res.ok) {
                 setStatus("success")
-                sessionStorage.setItem("cio100_gallery_unlocked", "true")
+                try {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify({ unlocked: true, unlockedAt: Date.now() })
+                    )
+                } catch {}
                 setIsUnlocked(true)
                 return
             }
