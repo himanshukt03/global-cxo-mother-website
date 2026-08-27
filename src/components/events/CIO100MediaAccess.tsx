@@ -62,7 +62,7 @@ export default function CIO100MediaAccess() {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [email, setEmail] = useState("")
-    const [company, setCompany] = useState("")
+    const [linkedinProfile, setLinkedinProfile] = useState("")
     const [consent, setConsent] = useState(false)
 
     const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle")
@@ -76,7 +76,7 @@ export default function CIO100MediaAccess() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        if (!firstName.trim() || !lastName.trim() || !email.trim() || !company.trim()) {
+        if (!firstName.trim() || !lastName.trim() || !email.trim() || !linkedinProfile.trim()) {
             setErrorMsg("Please fill in all required fields.")
             setStatus("error")
             return
@@ -96,7 +96,7 @@ export default function CIO100MediaAccess() {
                 first_name: firstName.trim() || "Attendee",
                 last_name: lastName.trim() || "",
                 email: email.trim().toLowerCase(),
-                company: company.trim() || "N/A",
+                company: linkedinProfile.trim(),
                 consent,
             }
 
@@ -297,13 +297,13 @@ export default function CIO100MediaAccess() {
 
                                 <div className="col-12">
                                     <label style={{ fontSize: "13.5px", fontWeight: 700, color: "var(--tg-heading-color, #1e293b)", marginBottom: "6px", display: "block" }}>
-                                        Organization / Company <span style={{ color: "#e11d48" }}>*</span>
+                                        LinkedIn Profile <span style={{ color: "#e11d48" }}>*</span>
                                     </label>
                                     <input
-                                        type="text"
-                                        value={company}
-                                        onChange={(e) => setCompany(e.target.value)}
-                                        placeholder="Your Organization"
+                                        type="url"
+                                        value={linkedinProfile}
+                                        onChange={(e) => setLinkedinProfile(e.target.value)}
+                                        placeholder="https://www.linkedin.com/in/your-name"
                                         required
                                         style={{
                                             width: "100%",
