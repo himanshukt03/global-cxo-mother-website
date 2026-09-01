@@ -78,7 +78,7 @@ export default function CIO100MediaAccess() {
         }
         // Validate LinkedIn profile URL
         const linkedinUrl = linkedinProfile.trim()
-        if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9\-_%]+\/?$/i.test(linkedinUrl)) {
+        if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9\-_%]+(\/)?(\?[^\s]*)?(\#[^\s]*)?$/i.test(linkedinUrl)) {
             setErrorMsg("Please enter a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/your-name).")
             setStatus("error")
             return
@@ -117,8 +117,9 @@ export default function CIO100MediaAccess() {
                 signal: primaryController.signal,
             }).catch(() => null).finally(() => clearTimeout(primaryTimeout))
 
-            // Fallback: direct Railway backend (different URL, genuine fallback)
-            if (!res || !res.ok) {
+            // Fallback: direct Railway backend — only on network failure or 5xx server errors,
+            // not on 4xx client errors (request itself is bad, retrying would duplicate the error)
+            if (!res || (res.status >= 500)) {
                 const fallbackController = new AbortController()
                 const fallbackTimeout = setTimeout(() => fallbackController.abort(), 15000)
                 res = await fetch(DIRECT_BACKEND_ENDPOINT, {
