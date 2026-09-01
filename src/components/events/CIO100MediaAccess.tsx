@@ -1,18 +1,13 @@
 "use client"
 import React, { useState, useEffect } from "react"
-import { API_BASE_URL } from "@/portal/api/config"
 
 const SHAREPOINT_LINK = "https://globalcxocircle.sharepoint.com/:f:/s/EventPics/IgAJqikt6aK0RbRi3Kj37uYrAfHomYc1KFuY3Lk0Yh0jTM4?e=8OUcPv"
 
+const DIRECT_BACKEND_ENDPOINT = "https://gcio-backend-production.up.railway.app/api/events/gallery-leads"
+
 function getGalleryLeadsEndpoint(): string {
-    let raw = (API_BASE_URL || "").trim().replace(/\/$/, "")
-    if (!raw || raw.startsWith("/") || raw.includes("vercel.app") || raw.includes("global-cxo-mother-website")) {
-        raw = "https://gcio-backend-production.up.railway.app/api"
-    }
-    if (raw.endsWith("/api")) {
-        return `${raw}/events/gallery-leads`
-    }
-    return `${raw}/api/events/gallery-leads`
+    // Primary: use the Next.js API proxy (same-origin, avoids corporate firewall blocks)
+    return "/api/gallery-leads"
 }
 
 interface MediaItem {
@@ -81,6 +76,13 @@ export default function CIO100MediaAccess() {
             setStatus("error")
             return
         }
+        // Validate LinkedIn profile URL
+        const linkedinUrl = linkedinProfile.trim()
+        if (!/^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9\-_%]+\/?$/i.test(linkedinUrl)) {
+            setErrorMsg("Please enter a valid LinkedIn profile URL (e.g. https://www.linkedin.com/in/your-name).")
+            setStatus("error")
+            return
+        }
         if (!consent) {
             setErrorMsg("Please check the consent box to proceed.")
             setStatus("error")
@@ -101,6 +103,10 @@ export default function CIO100MediaAccess() {
             }
 
             const primaryEndpoint = getGalleryLeadsEndpoint()
+
+            // Primary: same-origin Next.js API proxy with timeout
+            const primaryController = new AbortController()
+            const primaryTimeout = setTimeout(() => primaryController.abort(), 15000)
             let res: Response | null = await fetch(primaryEndpoint, {
                 method: "POST",
                 headers: {
@@ -108,21 +114,22 @@ export default function CIO100MediaAccess() {
                     "Accept": "application/json",
                 },
                 body: JSON.stringify(payload),
-            }).catch(() => null)
+                signal: primaryController.signal,
+            }).catch(() => null).finally(() => clearTimeout(primaryTimeout))
 
-            // If primary failed (e.g. env var misconfigured or network block), try direct canonical backend endpoint
+            // Fallback: direct Railway backend (different URL, genuine fallback)
             if (!res || !res.ok) {
-                const fallbackEndpoint = "https://gcio-backend-production.up.railway.app/api/events/gallery-leads"
-                if (primaryEndpoint !== fallbackEndpoint) {
-                    res = await fetch(fallbackEndpoint, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "Accept": "application/json",
-                        },
-                        body: JSON.stringify(payload),
-                    }).catch(() => null)
-                }
+                const fallbackController = new AbortController()
+                const fallbackTimeout = setTimeout(() => fallbackController.abort(), 15000)
+                res = await fetch(DIRECT_BACKEND_ENDPOINT, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                    signal: fallbackController.signal,
+                }).catch(() => null).finally(() => clearTimeout(fallbackTimeout))
             }
 
             if (res && res.ok) {
