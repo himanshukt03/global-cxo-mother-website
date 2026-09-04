@@ -172,6 +172,7 @@ export default function CIO100MediaAccess() {
                 fetch("/api/log-gallery-failure", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
+                    keepalive: true,
                     body: JSON.stringify({
                         payload,
                         primaryStatus,

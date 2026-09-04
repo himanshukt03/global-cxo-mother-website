@@ -1,20 +1,5 @@
 import { NextResponse } from "next/server"
-
-const DEFAULT_BACKEND_URL = "https://gcio-backend-production.up.railway.app"
-
-function getBackendEndpoint(): string {
-  const envUrl = (process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL)?.trim()
-  let base = envUrl && envUrl.length > 0 ? envUrl : DEFAULT_BACKEND_URL
-  if (!base.startsWith("http://") && !base.startsWith("https://")) {
-    base = DEFAULT_BACKEND_URL
-  }
-  base = base.replace(/\/$/, "")
-
-  if (base.endsWith("/api")) {
-    return `${base}/events/gallery-leads`
-  }
-  return `${base}/api/events/gallery-leads`
-}
+import { getGalleryLeadsBackendEndpoint } from "@/lib/server/galleryLeads"
 
 function maskEmail(email?: string): string {
   if (!email || typeof email !== "string" || !email.includes("@")) {
@@ -81,6 +66,17 @@ export async function POST(request: Request) {
 
   const { payload, primaryStatus, fallbackAttempted, fallbackStatus, timestamp } = body
 
+  // Minimal payload validation (prevents log spam / unintended backend writes)
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    typeof payload.email !== "string" ||
+    payload.email.trim().length === 0 ||
+    payload.email.length > 254
+  ) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
+  }
+
   const fallbackHttpStatus = !fallbackAttempted
     ? "not attempted"
     : fallbackStatus !== null
@@ -105,8 +101,8 @@ export async function POST(request: Request) {
 
   // ── 2. Server-side re-attempt to backend (bypasses client firewall) ──────
   let savedOnServer = false
-  if (payload?.email) {
-    const endpoint = getBackendEndpoint()
+  if (payload.email) {
+    const endpoint = getGalleryLeadsBackendEndpoint()
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), 10000)
 
@@ -118,11 +114,11 @@ export async function POST(request: Request) {
           "Accept": "application/json",
         },
         body: JSON.stringify({
-          event_slug: payload.event_slug || "cio-100-awards-conference",
-          first_name: payload.first_name || "",
-          last_name: payload.last_name || "",
-          email: payload.email || "",
-          company: payload.company || "",
+          event_slug: (payload.event_slug || "cio-100-awards-conference").trim(),
+          first_name: (payload.first_name || "").trim(),
+          last_name: (payload.last_name || "").trim(),
+          email: payload.email.trim().toLowerCase(),
+          company: (payload.company || "").trim(),
           consent: payload.consent ?? true,
         }),
         signal: controller.signal,
