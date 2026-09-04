@@ -67,7 +67,13 @@ export async function POST(request: Request) {
     // ignore parse errors — log whatever we have
   }
 
-  const { payload, primaryStatus, fallbackStatus, timestamp } = body
+  const { payload, primaryStatus, fallbackAttempted, fallbackStatus, timestamp } = body
+
+  const fallbackHttpStatus = !fallbackAttempted
+    ? "not attempted"
+    : fallbackStatus !== null
+      ? fallbackStatus
+      : "null (network failure)"
 
   // ── 1. Server-side log with masked PII (visible in Vercel Function Logs) ─
   console.error(
@@ -76,7 +82,8 @@ export async function POST(request: Request) {
       {
         timestamp: timestamp || new Date().toISOString(),
         primaryHttpStatus: primaryStatus ?? "null (network failure)",
-        fallbackHttpStatus: fallbackStatus ?? "null (network failure)",
+        fallbackAttempted: Boolean(fallbackAttempted),
+        fallbackHttpStatus,
         submission: sanitizeSubmissionForLog(payload),
       },
       null,
@@ -107,7 +114,7 @@ export async function POST(request: Request) {
           consent: payload.consent ?? true,
         }),
         signal: controller.signal,
-      })
+      }).finally(() => clearTimeout(timeoutId))
 
       savedOnServer = res.ok
 
@@ -127,8 +134,6 @@ export async function POST(request: Request) {
         `[GALLERY-FAILURE] Server-side re-attempt threw for ${maskEmail(payload?.email)}:`,
         err?.message
       )
-    } finally {
-      clearTimeout(timeoutId)
     }
   }
 

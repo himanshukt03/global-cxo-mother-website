@@ -118,15 +118,18 @@ export default function CIO100MediaAccess() {
             }).catch(() => null).finally(() => clearTimeout(primaryTimeout))
 
             const primaryStatus = res?.status ?? null
+            let fallbackAttempted = false
+            let fallbackStatus: number | null = null
 
             // Fallback: direct Railway backend.
             // Trigger on: network failure (null), 5xx server error, or 404 from our own
             // proxy (means the Next.js route wasn't deployed yet — not a bad request).
             const proxyNotFound = primaryStatus === 404
             if (!res || res.status >= 500 || proxyNotFound) {
+                fallbackAttempted = true
                 const fallbackController = new AbortController()
                 const fallbackTimeout = setTimeout(() => fallbackController.abort(), 15000)
-                res = await fetch(DIRECT_BACKEND_ENDPOINT, {
+                const fallbackRes = await fetch(DIRECT_BACKEND_ENDPOINT, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -135,9 +138,10 @@ export default function CIO100MediaAccess() {
                     body: JSON.stringify(payload),
                     signal: fallbackController.signal,
                 }).catch(() => null).finally(() => clearTimeout(fallbackTimeout))
-            }
 
-            const fallbackStatus = res?.status ?? null
+                fallbackStatus = fallbackRes?.status ?? null
+                res = fallbackRes
+            }
 
             if (res && res.ok) {
                 setStatus("success")
@@ -171,6 +175,7 @@ export default function CIO100MediaAccess() {
                     body: JSON.stringify({
                         payload,
                         primaryStatus,
+                        fallbackAttempted,
                         fallbackStatus,
                         timestamp: new Date().toISOString(),
                     }),
