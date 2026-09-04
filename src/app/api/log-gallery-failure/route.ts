@@ -67,12 +67,19 @@ export async function POST(request: Request) {
   const { payload, primaryStatus, fallbackAttempted, fallbackStatus, timestamp } = body
 
   // Minimal payload validation (prevents log spam / unintended backend writes)
+  const isValidOptionalShortString = (v: unknown, max: number) =>
+    v === undefined || (typeof v === "string" && v.trim().length <= max)
+
   if (
     !payload ||
     typeof payload !== "object" ||
     typeof payload.email !== "string" ||
     payload.email.trim().length === 0 ||
-    payload.email.length > 254
+    payload.email.trim().length > 254 ||
+    !isValidOptionalShortString(payload.event_slug, 80) ||
+    !isValidOptionalShortString(payload.first_name, 120) ||
+    !isValidOptionalShortString(payload.last_name, 120) ||
+    !isValidOptionalShortString(payload.company, 200)
   ) {
     return NextResponse.json({ error: "Invalid payload" }, { status: 400 })
   }
