@@ -154,10 +154,14 @@ export default function CIO100MediaAccess() {
             // Both primary and fallback failed — infrastructure issue on our side.
             // Grant gallery access silently and log the submission server-side so
             // no user data is lost. Fire-and-forget: do not await or show any error.
-            const shouldGrantSilentAccess =
-                !res ||                          // complete network failure
-                res.status >= 500 ||             // server error
-                res.status === 404               // route still not found after fallback
+            //
+            // Only show an error for known user-rejection codes from the backend:
+            //   400 Bad Request · 409 Conflict (duplicate) · 422 Unprocessable Entity
+            // Everything else (404, 405, 5xx, null/network failure) = infrastructure
+            // problem — grant silent access rather than blocking the user.
+            const isKnownUserError =
+                res !== null && (res.status === 400 || res.status === 409 || res.status === 422)
+            const shouldGrantSilentAccess = !isKnownUserError
 
             if (shouldGrantSilentAccess) {
                 // Fire-and-forget log request — user never sees a failure
