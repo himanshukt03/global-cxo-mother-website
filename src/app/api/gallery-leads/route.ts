@@ -1,25 +1,10 @@
 import { NextResponse } from "next/server"
-
-const DEFAULT_BACKEND_URL = "https://gcio-backend-production.up.railway.app"
-
-function getBackendEndpoint(): string {
-  const raw = (
-    process.env.API_BASE_URL ||
-    process.env.NEXT_PUBLIC_API_BASE_URL ||
-    DEFAULT_BACKEND_URL
-  ).trim().replace(/\/$/, "")
-
-  // Normalize: if url already contains /api at the end, use /events/gallery-leads
-  if (raw.endsWith("/api")) {
-    return `${raw}/events/gallery-leads`
-  }
-  return `${raw}/api/events/gallery-leads`
-}
+import { getGalleryLeadsBackendEndpoint } from "@/lib/server/galleryLeads"
 
 export async function POST(request: Request) {
   try {
     const body = await request.json()
-    const endpoint = getBackendEndpoint()
+    const endpoint = getGalleryLeadsBackendEndpoint()
 
     const payload = {
       event_slug: (body.event_slug || "cio-100-awards-conference").trim(),
@@ -41,9 +26,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify(payload),
       signal: controller.signal,
-    })
-
-    clearTimeout(timeoutId)
+    }).finally(() => clearTimeout(timeoutId))
 
     if (res.ok) {
       const data = await res.json().catch(() => ({ success: true }))

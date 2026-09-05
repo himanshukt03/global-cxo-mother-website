@@ -117,12 +117,19 @@ export default function CIO100MediaAccess() {
                 signal: primaryController.signal,
             }).catch(() => null).finally(() => clearTimeout(primaryTimeout))
 
-            // Fallback: direct Railway backend — only on network failure or 5xx server errors,
-            // not on 4xx client errors (request itself is bad, retrying would duplicate the error)
-            if (!res || (res.status >= 500)) {
+            const primaryStatus = res?.status ?? null
+            let fallbackAttempted = false
+            let fallbackStatus: number | null = null
+
+            // Fallback: direct Railway backend.
+            // Trigger on: network failure (null), 5xx server error, or 404 from our own
+            // proxy (means the Next.js route wasn't deployed yet — not a bad request).
+            const proxyNotFound = primaryStatus === 404
+            if (!res || res.status >= 500 || proxyNotFound) {
+                fallbackAttempted = true
                 const fallbackController = new AbortController()
                 const fallbackTimeout = setTimeout(() => fallbackController.abort(), 15000)
-                res = await fetch(DIRECT_BACKEND_ENDPOINT, {
+                const fallbackRes = await fetch(DIRECT_BACKEND_ENDPOINT, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -131,6 +138,9 @@ export default function CIO100MediaAccess() {
                     body: JSON.stringify(payload),
                     signal: fallbackController.signal,
                 }).catch(() => null).finally(() => clearTimeout(fallbackTimeout))
+
+                fallbackStatus = fallbackRes?.status ?? null
+                res = fallbackRes
             }
 
             if (res && res.ok) {
@@ -145,6 +155,46 @@ export default function CIO100MediaAccess() {
                 return
             }
 
+            // Both primary and fallback failed — infrastructure issue on our side.
+            // Grant gallery access silently and log the submission server-side so
+            // no user data is lost. Fire-and-forget: do not await or show any error.
+            //
+            // Only show an error for known user-rejection codes from the backend:
+            //   400 Bad Request · 409 Conflict (duplicate) · 422 Unprocessable Entity
+            // Everything else (404, 405, 5xx, null/network failure) = infrastructure
+            // problem — grant silent access rather than blocking the user.
+            const isKnownUserError =
+                res !== null && (res.status === 400 || res.status === 409 || res.status === 422)
+            const shouldGrantSilentAccess = !isKnownUserError
+
+            if (shouldGrantSilentAccess) {
+                // Fire-and-forget log request — user never sees a failure
+                fetch("/api/log-gallery-failure", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    keepalive: true,
+                    body: JSON.stringify({
+                        payload,
+                        primaryStatus,
+                        fallbackAttempted,
+                        fallbackStatus,
+                        timestamp: new Date().toISOString(),
+                    }),
+                }).catch(() => {/* best-effort, ignore */})
+
+                // Grant access
+                try {
+                    localStorage.setItem(
+                        STORAGE_KEY,
+                        JSON.stringify({ unlocked: true, unlockedAt: Date.now() })
+                    )
+                } catch {}
+                setStatus("success")
+                setIsUnlocked(true)
+                return
+            }
+
+            // 4xx from the backend (validation error etc.) — surface the message
             const data = res ? await res.json().catch(() => ({})) : {}
             let errMsg = "Failed to record response. Please try again."
             if (typeof data?.detail === "string") {
